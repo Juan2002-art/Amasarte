@@ -1,17 +1,25 @@
 import React, { createContext, useContext, useState } from 'react';
 
+export interface PizzaOptions {
+  tipoPizza?: 'completa' | 'mitad';
+  mitadPizza1?: { id: number; name: string };
+  mitadPizza2?: { id: number; name: string };
+  tipoBase?: string;
+}
+
 export interface CartItem {
   id: number;
   name: string;
   price: number;
   quantity: number;
+  options?: PizzaOptions;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, 'quantity'>) => void;
-  removeItem: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  addItem: (item: Omit<CartItem, 'quantity'>, options?: PizzaOptions) => void;
+  removeItem: (index: number) => void;
+  updateQuantity: (index: number, quantity: number) => void;
   clearCart: () => void;
   total: number;
   itemCount: number;
@@ -22,30 +30,24 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  const addItem = (item: Omit<CartItem, 'quantity'>) => {
+  const addItem = (item: Omit<CartItem, 'quantity'>, options?: PizzaOptions) => {
     setItems((prevItems) => {
-      const existingItem = prevItems.find((i) => i.id === item.id);
-      if (existingItem) {
-        return prevItems.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-        );
-      }
-      return [...prevItems, { ...item, quantity: 1 }];
+      return [...prevItems, { ...item, quantity: 1, options }];
     });
   };
 
-  const removeItem = (id: number) => {
-    setItems((prevItems) => prevItems.filter((i) => i.id !== id));
+  const removeItem = (index: number) => {
+    setItems((prevItems) => prevItems.filter((_, i) => i !== index));
   };
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (index: number, quantity: number) => {
     if (quantity <= 0) {
-      removeItem(id);
+      removeItem(index);
       return;
     }
     setItems((prevItems) =>
-      prevItems.map((i) =>
-        i.id === id ? { ...i, quantity } : i
+      prevItems.map((item, i) =>
+        i === index ? { ...item, quantity } : item
       )
     );
   };

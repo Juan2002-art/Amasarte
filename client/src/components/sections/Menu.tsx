@@ -2,10 +2,13 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Plus, Leaf, Flame, Star, Check } from 'lucide-react';
+import { Plus, Leaf, Flame, Star, Check, X } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useCart } from '@/context/CartContext';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { useCart, PizzaOptions } from '@/context/CartContext';
 import { toast } from 'sonner';
 import margheritaImage from '@assets/generated_images/fresh_margherita_pizza_with_basil.png';
 import pepperoniImage from '@assets/generated_images/crispy_pepperoni_pizza_with_cheese.png';
@@ -68,19 +71,51 @@ const menuItems = {
   ]
 };
 
+const allPizzas = [
+  ...menuItems.clasicas,
+  ...menuItems.especiales
+];
+
 const categories = [
   { id: 'clasicas', label: 'Clásicas' },
   { id: 'especiales', label: 'Especiales' },
   { id: 'bebidas', label: 'Bebidas' },
 ];
 
+const baseOptions = [
+  { value: 'tomate', label: 'Salsa de Tomate' },
+  { value: 'blanca', label: 'Base Blanca (Crema)' },
+  { value: 'barbeque', label: 'Base BBQ' },
+];
+
 export function Menu() {
   const [activeTab, setActiveTab] = useState('clasicas');
   const { addItem } = useCart();
   const [addedItems, setAddedItems] = useState<Set<number>>(new Set());
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [pizzaType, setPizzaType] = useState<'completa' | 'mitad'>('completa');
+  const [mitadPizza1, setMitadPizza1] = useState<any>(null);
+  const [mitadPizza2, setMitadPizza2] = useState<any>(null);
+  const [baseType, setBaseType] = useState('tomate');
 
-  const handleAddToCart = (item: any) => {
-    addItem({ id: item.id, name: item.name, price: item.price });
+  const isBeverage = (item: any) => categories.find(c => c.id === 'bebidas')?.id === activeTab || menuItems.bebidas.find(b => b.id === item.id);
+
+  const handleItemClick = (item: any) => {
+    if (isBeverage(item)) {
+      handleAddToCart(item);
+    } else {
+      setSelectedItem(item);
+      setPizzaType('completa');
+      setMitadPizza1(null);
+      setMitadPizza2(null);
+      setBaseType('tomate');
+      setDialogOpen(true);
+    }
+  };
+
+  const handleAddToCart = (item: any, options?: PizzaOptions) => {
+    addItem({ id: item.id, name: item.name, price: item.price }, options);
     setAddedItems(new Set([...addedItems, item.id]));
     toast.success(`${item.name} agregada al pedido`);
     setTimeout(() => {
@@ -90,6 +125,26 @@ export function Menu() {
         return newSet;
       });
     }, 2000);
+  };
+
+  const handleConfirmPizza = () => {
+    if (pizzaType === 'mitad' && (!mitadPizza1 || !mitadPizza2)) {
+      toast.error('Por favor selecciona 2 pizzas para la mitad');
+      return;
+    }
+
+    const options: PizzaOptions = {
+      tipoPizza: pizzaType,
+      tipoBase: baseType,
+      ...(pizzaType === 'mitad' && {
+        mitadPizza1: mitadPizza1 ? { id: mitadPizza1.id, name: mitadPizza1.name } : undefined,
+        mitadPizza2: mitadPizza2 ? { id: mitadPizza2.id, name: mitadPizza2.name } : undefined,
+      }),
+    };
+
+    handleAddToCart(selectedItem, options);
+    setDialogOpen(false);
+    setSelectedItem(null);
   };
 
   return (
@@ -157,7 +212,7 @@ export function Menu() {
                     </CardHeader>
                     <CardFooter className="mt-auto pt-4">
                       <Button 
-                        onClick={() => handleAddToCart(item)}
+                        onClick={() => handleItemClick(item)}
                         className={`w-full rounded-full transition-colors ${addedItems.has(item.id) ? 'bg-primary text-white' : 'group-hover:bg-primary group-hover:text-white'}`}
                         data-testid={`button-add-${item.id}`}
                       >
@@ -172,6 +227,111 @@ export function Menu() {
           ))}
         </Tabs>
       </div>
+
+      {/* Pizza Customization Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Personalizar {selectedItem?.name}</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            {/* Pizza Type Selection */}
+            <div>
+              <Label className="text-base font-semibold mb-3 block">Tipo de Pizza</Label>
+              <RadioGroup value={pizzaType} onValueChange={(v: any) => setPizzaType(v)}>
+                <div className="flex items-center space-x-2 mb-3">
+                  <RadioGroupItem value="completa" id="completa" />
+                  <Label htmlFor="completa" className="text-base cursor-pointer">Pizza Completa</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="mitad" id="mitad" />
+                  <Label htmlFor="mitad" className="text-base cursor-pointer">Mitad de 2 Pizzas Diferentes</Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            {/* Half Pizza Selection */}
+            {pizzaType === 'mitad' && (
+              <div className="bg-blue-50 p-4 rounded-lg space-y-4">
+                <p className="text-sm font-medium text-blue-900">Selecciona 2 pizzas diferentes:</p>
+                
+                <div>
+                  <Label className="text-base font-semibold mb-2 block">Primera Mitad</Label>
+                  <select 
+                    value={mitadPizza1?.id || ''} 
+                    onChange={(e) => {
+                      const pizza = allPizzas.find(p => p.id === parseInt(e.target.value));
+                      setMitadPizza1(pizza);
+                    }}
+                    className="w-full px-3 py-2 border rounded-md bg-white"
+                    data-testid="select-mitad-pizza-1"
+                  >
+                    <option value="">Selecciona una pizza...</option>
+                    {allPizzas.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <Label className="text-base font-semibold mb-2 block">Segunda Mitad</Label>
+                  <select 
+                    value={mitadPizza2?.id || ''} 
+                    onChange={(e) => {
+                      const pizza = allPizzas.find(p => p.id === parseInt(e.target.value));
+                      setMitadPizza2(pizza);
+                    }}
+                    className="w-full px-3 py-2 border rounded-md bg-white"
+                    data-testid="select-mitad-pizza-2"
+                  >
+                    <option value="">Selecciona una pizza...</option>
+                    {allPizzas.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {mitadPizza1 && mitadPizza2 && (
+                  <div className="mt-3 p-3 bg-white rounded border-l-4 border-green-500">
+                    <p className="text-sm font-semibold text-green-700">✓ Combinación válida: {mitadPizza1.name} + {mitadPizza2.name}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Base Type Selection */}
+            <div>
+              <Label className="text-base font-semibold mb-3 block">Tipo de Base</Label>
+              <RadioGroup value={baseType} onValueChange={setBaseType}>
+                {baseOptions.map(option => (
+                  <div key={option.value} className="flex items-center space-x-2 mb-3">
+                    <RadioGroupItem value={option.value} id={option.value} />
+                    <Label htmlFor={option.value} className="text-base cursor-pointer">{option.label}</Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setDialogOpen(false)}
+              data-testid="button-cancel-pizza"
+            >
+              Cancelar
+            </Button>
+            <Button 
+              onClick={handleConfirmPizza}
+              className="bg-primary text-white"
+              data-testid="button-confirm-pizza"
+            >
+              Agregar al Pedido
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

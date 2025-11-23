@@ -85,6 +85,17 @@ export function Checkout() {
     try {
       const telefono = formData.telefono.startsWith('+57') ? formData.telefono : `+57${formData.telefono}`;
       
+      const itemsDetails = items.map((item) => {
+        let itemStr = `${item.quantity}x ${item.name}`;
+        if (item.options?.tipoPizza) {
+          if (item.options.tipoPizza === 'mitad') {
+            itemStr += ` (Mitad: ${item.options.mitadPizza1?.name} + ${item.options.mitadPizza2?.name})`;
+          }
+          itemStr += ` [Base: ${item.options.tipoBase}]`;
+        }
+        return itemStr;
+      }).join(', ');
+
       const orderData = {
         nombre: formData.nombre,
         telefono: telefono,
@@ -92,7 +103,7 @@ export function Checkout() {
         tipoEntrega: formData.tipoEntrega,
         formaPago: formData.formaPago,
         detallesAdicionales: formData.detallesAdicionales,
-        items: items.map((item) => `${item.quantity}x ${item.name}`).join(', '),
+        items: itemsDetails,
         total: total.toFixed(2),
       };
 
@@ -205,27 +216,37 @@ export function Checkout() {
                     </p>
                   ) : (
                     <div className="space-y-3 max-h-[400px] overflow-y-auto">
-                      {items.map((item) => (
+                      {items.map((item, index) => (
                         <motion.div
-                          key={item.id}
+                          key={index}
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          className="flex justify-between items-center p-3 bg-muted rounded-lg group"
+                          className="flex justify-between items-start p-3 bg-muted rounded-lg group"
                         >
                           <div className="flex-1">
                             <p className="font-semibold text-sm">{item.name}</p>
-                            <p className="text-xs text-muted-foreground">
+                            {item.options?.tipoPizza === 'mitad' && (
+                              <p className="text-xs text-blue-600 mt-1">
+                                Mitad: {item.options.mitadPizza1?.name} + {item.options.mitadPizza2?.name}
+                              </p>
+                            )}
+                            {item.options?.tipoBase && (
+                              <p className="text-xs text-blue-600">
+                                Base: {item.options.tipoBase}
+                              </p>
+                            )}
+                            <p className="text-xs text-muted-foreground mt-1">
                               {formatPrice(item.price)} x {item.quantity}
                             </p>
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-shrink-0">
                             <select
                               value={item.quantity}
                               onChange={(e) =>
-                                updateQuantity(item.id, parseInt(e.target.value))
+                                updateQuantity(index, parseInt(e.target.value))
                               }
                               className="w-12 px-1 py-1 border rounded text-xs"
-                              data-testid={`select-quantity-${item.id}`}
+                              data-testid={`select-quantity-${index}`}
                             >
                               {[1, 2, 3, 4, 5].map((q) => (
                                 <option key={q} value={q}>
@@ -234,9 +255,9 @@ export function Checkout() {
                               ))}
                             </select>
                             <button
-                              onClick={() => removeItem(item.id)}
+                              onClick={() => removeItem(index)}
                               className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 rounded"
-                              data-testid={`button-remove-${item.id}`}
+                              data-testid={`button-remove-${index}`}
                             >
                               <Trash2 size={14} className="text-red-500" />
                             </button>
