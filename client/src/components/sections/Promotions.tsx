@@ -366,16 +366,38 @@ export function Promotions() {
           </div>
 
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-12 rounded-lg p-6 border-l-4 border-orange-500"
-            style={{ backgroundColor: '#1A3A3B' }}
+            className="mt-12 rounded-lg p-8 border-l-4 relative overflow-hidden"
+            style={{ 
+              backgroundColor: '#2A5A5B',
+              borderLeftColor: '#FF8533',
+              boxShadow: '0 8px 32px rgba(255, 133, 51, 0.2)'
+            }}
           >
-            <p className="text-center" style={{ color: '#F5E8D0' }}>
-              <span className="font-semibold" style={{ color: '#F5E8D0' }}>¡Válido esta semana!</span> Selecciona tus preferencias para cada promoción.
-            </p>
+            <div className="absolute -right-20 -top-20 w-40 h-40 bg-orange-500 rounded-full opacity-10"></div>
+            <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-orange-500 rounded-full opacity-10"></div>
+            
+            <div className="relative z-10">
+              <p className="text-center">
+                <span 
+                  className="inline-block font-bold text-xl md:text-2xl px-6 py-3 rounded-full"
+                  style={{ 
+                    color: '#FFFFFF',
+                    backgroundColor: '#FF8533',
+                    textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                    letterSpacing: '1px'
+                  }}
+                >
+                  ⏰ ¡Válido esta semana!
+                </span>
+              </p>
+              <p className="text-center mt-4" style={{ color: '#F5E8D0', fontSize: '1rem' }}>
+                Selecciona tus preferencias para cada promoción.
+              </p>
+            </div>
           </motion.div>
         </div>
       </section>
