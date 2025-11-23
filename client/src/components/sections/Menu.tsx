@@ -15,23 +15,33 @@ import trufaImage from '@assets/generated_images/truffle_mushroom_gourmet_pizza.
 import burratImage from '@assets/generated_images/burrata_prosciutto_artisanal_pizza.png';
 import diabolaImage from '@assets/generated_images/spicy_diavola_hot_pizza.png';
 
+// Format price in Colombian pesos
+const formatPrice = (price: number): string => {
+  return new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+};
+
 // Mock Data
 const menuItems = {
   clasicas: [
-    { id: 1, name: 'Margherita', desc: 'Salsa de tomate San Marzano, mozzarella fior di latte, albahaca fresca, aceite de oliva virgen extra.', price: 12.99, tags: ['veg'], image: margheritaImage },
-    { id: 2, name: 'Pepperoni', desc: 'Salsa de tomate, mozzarella, doble porción de pepperoni crujiente.', price: 14.50, tags: ['popular'], image: pepperoniImage },
-    { id: 3, name: 'Cuatro Quesos', desc: 'Mozzarella, gorgonzola, parmesano reggiano, provolone, miel picante.', price: 15.50, tags: ['veg'], image: quatroQuesosImage },
-    { id: 4, name: 'Hawaiana Artesanal', desc: 'Piña asada, jamón serrano, mozzarella, salsa de tomate.', price: 14.99, tags: [], image: hawaianaImage },
+    { id: 1, name: 'Margherita', desc: 'Salsa de tomate San Marzano, mozzarella fior di latte, albahaca fresca, aceite de oliva virgen extra.', price: 32000, tags: ['veg'], image: margheritaImage },
+    { id: 2, name: 'Pepperoni', desc: 'Salsa de tomate, mozzarella, doble porción de pepperoni crujiente.', price: 35000, tags: ['popular'], image: pepperoniImage },
+    { id: 3, name: 'Cuatro Quesos', desc: 'Mozzarella, gorgonzola, parmesano reggiano, provolone, miel picante.', price: 38000, tags: ['veg'], image: quatroQuesosImage },
+    { id: 4, name: 'Hawaiana Artesanal', desc: 'Piña asada, jamón serrano, mozzarella, salsa de tomate.', price: 35000, tags: [], image: hawaianaImage },
   ],
   especiales: [
-    { id: 5, name: 'Trufa y Hongos', desc: 'Crema de trufa, mix de hongos silvestres, mozzarella, aceite de trufa blanca.', price: 18.99, tags: ['gourmet', 'veg'], image: trufaImage },
-    { id: 6, name: 'Burrata y Prosciutto', desc: 'Base blanca, prosciutto di Parma, burrata fresca entera, rúcula, tomates cherry.', price: 19.50, tags: ['chef-choice'], image: burratImage },
-    { id: 7, name: 'Diavola Picante', desc: "Salami picante, 'nduja calabresa, chiles frescos, miel.", price: 16.50, tags: ['spicy'], image: diabolaImage },
+    { id: 5, name: 'Trufa y Hongos', desc: 'Crema de trufa, mix de hongos silvestres, mozzarella, aceite de trufa blanca.', price: 42000, tags: ['gourmet', 'veg'], image: trufaImage },
+    { id: 6, name: 'Burrata y Prosciutto', desc: 'Base blanca, prosciutto di Parma, burrata fresca entera, rúcula, tomates cherry.', price: 44000, tags: ['chef-choice'], image: burratImage },
+    { id: 7, name: 'Diavola Picante', desc: "Salami picante, 'nduja calabresa, chiles frescos, miel.", price: 40000, tags: ['spicy'], image: diabolaImage },
   ],
   bebidas: [
-    { id: 8, name: 'Limonada Casera', desc: 'Limones frescos, menta y un toque de jengibre.', price: 4.50, tags: [], image: null },
-    { id: 9, name: 'Cerveza Artesanal IPA', desc: 'Cervecería local, notas cítricas.', price: 6.00, tags: [], image: null },
-    { id: 10, name: 'Vino Tinto Malbec', desc: 'Copa de la casa.', price: 7.50, tags: [], image: null },
+    { id: 8, name: 'Limonada Casera', desc: 'Limones frescos, menta y un toque de jengibre.', price: 13000, tags: [], image: null },
+    { id: 9, name: 'Cerveza Artesanal IPA', desc: 'Cervecería local, notas cítricas.', price: 14000, tags: [], image: null },
+    { id: 10, name: 'Vino Tinto Malbec', desc: 'Copa de la casa.', price: 15000, tags: [], image: null },
   ]
 };
 
@@ -118,7 +128,7 @@ export function Menu() {
                     <CardHeader className={item.image ? 'pt-6' : ''}>
                       <div className="flex justify-between items-start mb-2">
                         <CardTitle className="text-xl font-bold">{item.name}</CardTitle>
-                        <span className="text-lg font-bold text-primary">${item.price}</span>
+                        <span className="text-lg font-bold text-primary">{formatPrice(item.price)}</span>
                       </div>
                       <CardDescription className="text-base line-clamp-2">{item.desc}</CardDescription>
                     </CardHeader>

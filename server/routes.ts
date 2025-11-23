@@ -93,8 +93,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const orderId = generateOrderId();
       const now = new Date();
-      const fecha = now.toLocaleDateString("es-MX");
-      const hora = now.toLocaleTimeString("es-MX");
+      
+      // Convert to Colombia timezone (America/Bogota)
+      const colombiaFormatter = new Intl.DateTimeFormat("es-CO", {
+        timeZone: "America/Bogota",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      
+      const parts = colombiaFormatter.formatToParts(now);
+      const partsMap = Object.fromEntries(parts.map(p => [p.type, p.value]));
+      
+      const fecha = `${partsMap.day}/${partsMap.month}/${partsMap.year}`;
+      const hora = `${partsMap.hour}:${partsMap.minute}:${partsMap.second}`;
       
       const rowData = [
         orderId,

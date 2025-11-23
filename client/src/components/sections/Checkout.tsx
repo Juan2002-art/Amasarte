@@ -21,10 +21,22 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { Trash2, Send, X, CheckCircle2 } from 'lucide-react';
+import { Trash2, Send, X, CheckCircle2, ShoppingCart } from 'lucide-react';
+import { useLocation } from 'wouter';
+
+// Format price in Colombian pesos
+const formatPrice = (price: number): string => {
+  return new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+};
 
 export function Checkout() {
   const { items, total, clearCart, removeItem, updateQuantity } = useCart();
+  const [, navigate] = useLocation();
   const [loading, setLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState<{orderId: string; timestamp: string} | null>(null);
   const [formData, setFormData] = useState({
@@ -196,7 +208,7 @@ export function Checkout() {
                           <div className="flex-1">
                             <p className="font-semibold text-sm">{item.name}</p>
                             <p className="text-xs text-muted-foreground">
-                              ${item.price.toFixed(2)} x {item.quantity}
+                              {formatPrice(item.price)} x {item.quantity}
                             </p>
                           </div>
                           <div className="flex items-center gap-2">
@@ -227,11 +239,21 @@ export function Checkout() {
                     </div>
                   )}
                 </CardContent>
-                <CardFooter className="flex flex-col border-t pt-4">
-                  <div className="w-full flex justify-between font-bold text-lg mb-4">
+                <CardFooter className="flex flex-col border-t pt-4 gap-4">
+                  <div className="w-full flex justify-between font-bold text-lg">
                     <span>Total:</span>
-                    <span className="text-primary">${total.toFixed(2)}</span>
+                    <span className="text-primary">{formatPrice(total)}</span>
                   </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => navigate('/#menu')}
+                    className="w-full rounded-full"
+                    data-testid="button-go-to-menu"
+                  >
+                    <ShoppingCart size={16} className="mr-2" />
+                    Volver al Menú
+                  </Button>
                 </CardFooter>
               </Card>
             </motion.div>
@@ -357,7 +379,7 @@ export function Checkout() {
                 data-testid="button-submit-order"
               >
                 <Send size={18} />
-                {loading ? 'Procesando...' : `Confirmar Pedido - $${total.toFixed(2)}`}
+                {loading ? 'Procesando...' : `Confirmar Pedido - ${formatPrice(total)}`}
               </Button>
             </motion.form>
           </div>
