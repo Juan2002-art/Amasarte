@@ -13,12 +13,20 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { Trash2, Send, X } from 'lucide-react';
+import { Trash2, Send, X, CheckCircle2 } from 'lucide-react';
 
 export function Checkout() {
   const { items, total, clearCart, removeItem, updateQuantity } = useCart();
   const [loading, setLoading] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState<{orderId: string; timestamp: string} | null>(null);
   const [formData, setFormData] = useState({
     nombre: '',
     telefono: '',
@@ -80,6 +88,15 @@ export function Checkout() {
       }
 
       const result = await response.json();
+      const now = new Date();
+      const timestamp = now.toLocaleTimeString('es-MX');
+      
+      // Show success notification
+      setOrderSuccess({
+        orderId: result.orderId,
+        timestamp: timestamp,
+      });
+      
       toast.success(`¡Pedido creado! ID: ${result.orderId}`);
       clearCart();
       setFormData({
@@ -99,9 +116,55 @@ export function Checkout() {
   };
 
   return (
-    <section id="checkout" className="py-24 bg-muted/30">
-      <div className="container mx-auto px-4">
-        <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center">Tu Pedido</h2>
+    <>
+      {/* Success Dialog */}
+      <Dialog open={!!orderSuccess} onOpenChange={(open) => !open && setOrderSuccess(null)}>
+        <DialogContent className="sm:max-w-md border-2 border-green-500">
+          <DialogHeader className="text-center">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 200 }}
+              className="flex justify-center mb-4"
+            >
+              <CheckCircle2 size={64} className="text-green-500" />
+            </motion.div>
+            <DialogTitle className="text-2xl font-bold text-green-600 text-center">
+              ¡Pedido Confirmado!
+            </DialogTitle>
+          </DialogHeader>
+          
+          <DialogDescription className="hidden" />
+          
+          <div className="space-y-3">
+            <div className="text-center text-gray-700">Tu pedido ha sido registrado correctamente.</div>
+            <div className="bg-green-50 rounded-lg p-4 space-y-2">
+              <div className="text-sm text-gray-600">ID del Pedido:</div>
+              <div className="text-2xl font-bold text-green-700 font-mono">
+                {orderSuccess?.orderId}
+              </div>
+              <div className="text-sm text-gray-500 mt-2">
+                Hora: {orderSuccess?.timestamp}
+              </div>
+            </div>
+            <div className="text-sm text-gray-600 text-center">
+              Pronto te contactaremos para confirmar los detalles de tu pedido.
+            </div>
+          </div>
+          
+          <Button
+            onClick={() => setOrderSuccess(null)}
+            className="w-full bg-green-600 hover:bg-green-700 rounded-full"
+            data-testid="button-close-success-dialog"
+          >
+            Entendido
+          </Button>
+        </DialogContent>
+      </Dialog>
+
+      <section id="checkout" className="py-24 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center">Tu Pedido</h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Order Summary */}
@@ -301,5 +364,6 @@ export function Checkout() {
         </div>
       </div>
     </section>
+    </>
   );
 }
