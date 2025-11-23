@@ -14,6 +14,16 @@ import hawaianaImage from '@assets/generated_images/hawaiian_pizza_with_pineappl
 import trufaImage from '@assets/generated_images/truffle_mushroom_gourmet_pizza.png';
 import burratImage from '@assets/generated_images/burrata_prosciutto_artisanal_pizza.png';
 import diabolaImage from '@assets/generated_images/spicy_diavola_hot_pizza.png';
+import carboneraImage from '@assets/generated_images/carbonara_pizza_with_pancetta.png';
+import capreseImage from '@assets/generated_images/caprese_pizza_with_fresh_ingredients.png';
+import ruguelaImage from '@assets/generated_images/arugula_and_parmesan_pizza.png';
+import bbqImage from '@assets/generated_images/bbq_smoked_meat_pizza.png';
+import camaronesImage from '@assets/generated_images/garlic_shrimp_pizza.png';
+import aguaImage from '@assets/generated_images/sparkling_mineral_water.png';
+import refrescoImage from '@assets/generated_images/fresh_tropical_fruit_juice.png';
+import vino_blancoImage from '@assets/generated_images/white_sauvignon_blanc_wine.png';
+import cervezaImage from '@assets/generated_images/premium_lager_beer_glass.png';
+import gasosaImage from '@assets/generated_images/premium_gourmet_soda.png';
 
 // Format price in Colombian pesos
 const formatPrice = (price: number): string => {
@@ -32,26 +42,26 @@ const menuItems = {
     { id: 2, name: 'Pepperoni', desc: 'Salsa de tomate, mozzarella, doble porción de pepperoni crujiente.', price: 35000, tags: ['popular'], image: pepperoniImage },
     { id: 3, name: 'Cuatro Quesos', desc: 'Mozzarella, gorgonzola, parmesano reggiano, provolone, miel picante.', price: 38000, tags: ['veg'], image: quatroQuesosImage },
     { id: 4, name: 'Hawaiana Artesanal', desc: 'Piña asada, jamón serrano, mozzarella, salsa de tomate.', price: 35000, tags: [], image: hawaianaImage },
-    { id: 11, name: 'Carbonara', desc: 'Base blanca, panceta, queso pecorino, yema de huevo, pimienta negra.', price: 36000, tags: [], image: null },
-    { id: 12, name: 'Caprese', desc: 'Tomates frescos, mozzarella de búfala, albahaca, aceite de oliva, balsámico.', price: 34000, tags: ['veg'], image: null },
+    { id: 11, name: 'Carbonara', desc: 'Base blanca, panceta, queso pecorino, yema de huevo, pimienta negra.', price: 36000, tags: [], image: carboneraImage },
+    { id: 12, name: 'Caprese', desc: 'Tomates frescos, mozzarella de búfala, albahaca, aceite de oliva, balsámico.', price: 34000, tags: ['veg'], image: capreseImage },
   ],
   especiales: [
     { id: 5, name: 'Trufa y Hongos', desc: 'Crema de trufa, mix de hongos silvestres, mozzarella, aceite de trufa blanca.', price: 42000, tags: ['gourmet', 'veg'], image: trufaImage },
     { id: 6, name: 'Burrata y Prosciutto', desc: 'Base blanca, prosciutto di Parma, burrata fresca entera, rúcula, tomates cherry.', price: 44000, tags: ['chef-choice'], image: burratImage },
     { id: 7, name: 'Diavola Picante', desc: "Salami picante, 'nduja calabresa, chiles frescos, miel.", price: 40000, tags: ['spicy'], image: diabolaImage },
-    { id: 13, name: 'Rúcula y Parmesano', desc: 'Base blanca, rúcula fresca, virutas de parmesano, tomates asados, piñones.', price: 41000, tags: ['veg', 'gourmet'], image: null },
-    { id: 14, name: 'BBQ Ahumada', desc: 'Carne ahumada, cebolla roja, cilantro, salsa BBQ artesanal.', price: 43000, tags: ['popular'], image: null },
-    { id: 15, name: 'Camarones al Ajillo', desc: 'Base blanca, camarones al ajillo, limón, ajo tostado, perejil.', price: 45000, tags: ['chef-choice'], image: null },
+    { id: 13, name: 'Rúcula y Parmesano', desc: 'Base blanca, rúcula fresca, virutas de parmesano, tomates asados, piñones.', price: 41000, tags: ['veg', 'gourmet'], image: ruguelaImage },
+    { id: 14, name: 'BBQ Ahumada', desc: 'Carne ahumada, cebolla roja, cilantro, salsa BBQ artesanal.', price: 43000, tags: ['popular'], image: bbqImage },
+    { id: 15, name: 'Camarones al Ajillo', desc: 'Base blanca, camarones al ajillo, limón, ajo tostado, perejil.', price: 45000, tags: ['chef-choice'], image: camaronesImage },
   ],
   bebidas: [
     { id: 8, name: 'Limonada Casera', desc: 'Limones frescos, menta y un toque de jengibre.', price: 13000, tags: [], image: null },
     { id: 9, name: 'Cerveza Artesanal IPA', desc: 'Cervecería local, notas cítricas.', price: 14000, tags: [], image: null },
     { id: 10, name: 'Vino Tinto Malbec', desc: 'Copa de la casa.', price: 15000, tags: [], image: null },
-    { id: 16, name: 'Agua Mineral con Gas', desc: 'Refrescante y pura, con burbujas naturales.', price: 8000, tags: [], image: null },
-    { id: 17, name: 'Refresco Natural', desc: 'Jugo fresco de frutas tropicales del día.', price: 10000, tags: [], image: null },
-    { id: 18, name: 'Vino Blanco Sauvignon Blanc', desc: 'Copa de blanco, fresco y afrutado.', price: 13000, tags: [], image: null },
-    { id: 19, name: 'Cerveza Lager Premium', desc: 'Cerveza clara, suave y refrescante.', price: 12000, tags: [], image: null },
-    { id: 20, name: 'Gaseosa Premium', desc: 'Bebida carbonatada gourmet de importación.', price: 9000, tags: [], image: null },
+    { id: 16, name: 'Agua Mineral con Gas', desc: 'Refrescante y pura, con burbujas naturales.', price: 8000, tags: [], image: aguaImage },
+    { id: 17, name: 'Refresco Natural', desc: 'Jugo fresco de frutas tropicales del día.', price: 10000, tags: [], image: refrescoImage },
+    { id: 18, name: 'Vino Blanco Sauvignon Blanc', desc: 'Copa de blanco, fresco y afrutado.', price: 13000, tags: [], image: vino_blancoImage },
+    { id: 19, name: 'Cerveza Lager Premium', desc: 'Cerveza clara, suave y refrescante.', price: 12000, tags: [], image: cervezaImage },
+    { id: 20, name: 'Gaseosa Premium', desc: 'Bebida carbonatada gourmet de importación.', price: 9000, tags: [], image: gasosaImage },
   ]
 };
 
