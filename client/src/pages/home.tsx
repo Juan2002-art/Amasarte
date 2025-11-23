@@ -27,8 +27,8 @@ function HomeContent() {
         <Menu />
         <Gallery />
         <Testimonials />
-        <Contact />
         <Checkout />
+        <Contact />
       </main>
 
       <Footer />

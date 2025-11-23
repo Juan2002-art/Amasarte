@@ -1,50 +1,8 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Mail, Clock, Instagram, Facebook, Twitter, Send } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Instagram, Facebook, Twitter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
 
 export function Contact() {
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    nombre: '',
-    email: '',
-    telefono: '',
-    mensaje: '',
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al enviar el formulario');
-      }
-
-      toast.success('¡Mensaje enviado exitosamente! Pronto nos pondremos en contacto.');
-      setFormData({ nombre: '', email: '', telefono: '', mensaje: '' });
-    } catch (error) {
-      toast.error('Error al enviar el mensaje. Por favor, intenta de nuevo.');
-      console.error('Form submission error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <section id="contact" className="py-24" style={{ backgroundColor: '#1A3A3B' }}>
@@ -68,7 +26,7 @@ export function Contact() {
                 </div>
                 <div>
                   <h3 className="font-bold text-xl mb-1" style={{ color: '#F5E8D0' }}>Dirección</h3>
-                  <p style={{ color: '#F5E8D0' }}>Urb Emmanuel, Manzana H, Lote 5<br/>Cartagena, Bolívar, Colombia</p>
+                  <p style={{ color: '#F5E8D0' }}>Urb Emmanuel, Manzana H, Lote 6<br/>Cartagena, Bolívar, Colombia</p>
                 </div>
               </motion.div>
 
@@ -139,92 +97,25 @@ export function Contact() {
             </div>
           </div>
 
-          {/* Contact Form */}
+          {/* Map */}
           <motion.div 
-            className="p-12 flex flex-col justify-center"
+            className="overflow-hidden rounded-lg"
             style={{ backgroundColor: '#2A5A5B' }}
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-3xl font-bold mb-8" style={{ color: '#F5E8D0' }}>Envía tu mensaje</h2>
-            
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <Label htmlFor="nombre" className="font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Nombre Completo</Label>
-                <Input
-                  id="nombre"
-                  name="nombre"
-                  type="text"
-                  placeholder="Tu nombre"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                  required
-                  className="rounded-lg"
-                  style={{ backgroundColor: '#1A3A3B', borderColor: '#FF8533', color: '#F5E8D0', border: '2px solid' }}
-                  data-testid="input-nombre"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="email" className="font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Correo Electrónico</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="tu@correo.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="rounded-lg"
-                  style={{ backgroundColor: '#1A3A3B', borderColor: '#FF8533', color: '#F5E8D0', border: '2px solid' }}
-                  data-testid="input-email"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="telefono" className="font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Teléfono (Opcional)</Label>
-                <Input
-                  id="telefono"
-                  name="telefono"
-                  type="tel"
-                  placeholder="+57 300 6520811"
-                  value={formData.telefono}
-                  onChange={handleChange}
-                  className="rounded-lg"
-                  style={{ backgroundColor: '#1A3A3B', borderColor: '#FF8533', color: '#F5E8D0', border: '2px solid' }}
-                  data-testid="input-telefono"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="mensaje" className="font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Mensaje</Label>
-                <Textarea
-                  id="mensaje"
-                  name="mensaje"
-                  placeholder="Cuéntanos cómo podemos ayudarte..."
-                  value={formData.mensaje}
-                  onChange={handleChange}
-                  required
-                  rows={4}
-                  className="rounded-lg resize-none"
-                  style={{ backgroundColor: '#1A3A3B', borderColor: '#FF8533', color: '#F5E8D0', border: '2px solid' }}
-                  data-testid="textarea-mensaje"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-full text-white font-semibold py-6 flex items-center justify-center gap-2"
-                style={{ backgroundColor: '#FF8533' }}
-                data-testid="button-submit-contact"
-              >
-                <Send size={18} />
-                {loading ? 'Enviando...' : 'Enviar Mensaje'}
-              </Button>
-            </form>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.5684047644476!2d-75.50894632346949!3d10.39728989240885!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e9b8c2a2a2a2a2b%3A0x2a2a2a2a2a2a2a2a!2sUrbanizaci%C3%B3n%20Emmanuel%2C%20Cartagena!5e0!3m2!1ses!2sco!4v1234567890"
+              width="100%"
+              height="100%"
+              style={{ border: 0, minHeight: '400px' }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Ubicación AMASARTE"
+            ></iframe>
           </motion.div>
 
         </div>
