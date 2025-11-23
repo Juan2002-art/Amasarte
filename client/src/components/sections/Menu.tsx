@@ -44,13 +44,11 @@ const formatPrice = (price: number): string => {
 // Size multipliers for pizza prices
 const sizeMultipliers = {
   personal: 1,
-  mediana: 1.3,
   grande: 1.7,
 };
 
 const sizeLabels = {
-  personal: 'Personal (25cm)',
-  mediana: 'Mediana (30cm)',
+  personal: 'Personal (30cm)',
   grande: 'Grande (40cm)',
 };
 
@@ -111,7 +109,7 @@ export function Menu() {
   const [mitadCadaPizza1, setMitadCadaPizza1] = useState<any>(null);
   const [mitadCadaPizza2, setMitadCadaPizza2] = useState<any>(null);
   const [baseType, setBaseType] = useState('tomate');
-  const [selectedSize, setSelectedSize] = useState<'personal' | 'mediana' | 'grande'>('mediana');
+  const [selectedSize, setSelectedSize] = useState<'personal' | 'grande'>('personal');
 
   const isMitadDeCadaPizza = selectedItem?.id === 50;
 
