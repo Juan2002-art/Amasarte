@@ -280,8 +280,8 @@ export function Menu() {
 
       {/* Pizza Customization Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader className="flex flex-row items-center justify-between">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto md:max-h-none md:overflow-y-visible">
+          <DialogHeader className="flex flex-row items-center justify-between sticky top-0 bg-white md:bg-transparent md:sticky md:top-auto z-10">
             <DialogTitle>Personalizar {selectedItem?.name}</DialogTitle>
             <button
               onClick={() => setDialogOpen(false)}
