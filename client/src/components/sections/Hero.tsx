@@ -44,7 +44,12 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <Button size="lg" className="rounded-full text-lg px-8 py-6 h-auto w-full sm:w-auto shadow-[0_0_20px_rgba(46,204,113,0.4)]">
+          <Button 
+            size="lg" 
+            className="rounded-full text-lg px-8 py-6 h-auto w-full sm:w-auto shadow-[0_0_20px_rgba(46,204,113,0.4)]"
+            onClick={() => document.getElementById('checkout')?.scrollIntoView({ behavior: 'smooth' })}
+            data-testid="button-order-hero"
+          >
             Hacer Pedido Online
           </Button>
           <Button
@@ -52,6 +57,7 @@ export function Hero() {
             variant="outline"
             className="rounded-full text-lg px-8 py-6 h-auto w-full sm:w-auto border-white text-white hover:bg-white/10 hover:text-white bg-transparent backdrop-blur-sm"
             onClick={() => document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth' })}
+            data-testid="button-menu-hero"
           >
             Ver Menú
           </Button>

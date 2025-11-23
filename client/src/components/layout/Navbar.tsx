@@ -62,6 +62,8 @@ export function Navbar() {
           <Button 
             variant={isScrolled ? "default" : "secondary"}
             className="rounded-full font-semibold"
+            onClick={() => scrollToSection('#checkout')}
+            data-testid="button-order-navbar-desktop"
           >
             Hacer Pedido
           </Button>
@@ -94,7 +96,12 @@ export function Navbar() {
                 {link.name}
               </button>
             ))}
-            <Button className="w-full rounded-full mt-2" size="lg">
+            <Button 
+              className="w-full rounded-full mt-2" 
+              size="lg"
+              onClick={() => scrollToSection('#checkout')}
+              data-testid="button-order-navbar-mobile"
+            >
               Hacer Pedido Online
             </Button>
           </motion.div>
