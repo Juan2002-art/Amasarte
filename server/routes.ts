@@ -4,14 +4,24 @@ import { storage } from "./storage";
 import { google } from "googleapis";
 import { z } from "zod";
 
-const ContactFormSchema = z.object({
+const OrderSchema = z.object({
   nombre: z.string().min(1, "El nombre es requerido"),
-  email: z.string().email("Email inválido"),
-  telefono: z.string().optional(),
-  mensaje: z.string().min(1, "El mensaje es requerido"),
+  telefono: z.string().min(1, "El teléfono es requerido"),
+  direccion: z.string(),
+  tipoEntrega: z.enum(['domicilio', 'recoger', 'comeraqui']),
+  formaPago: z.enum(['efectivo', 'tarjeta', 'transferencia']),
+  detallesAdicionales: z.string().optional(),
+  items: z.string().min(1, "El pedido debe contener items"),
+  total: z.string(),
 });
 
-type ContactForm = z.infer<typeof ContactFormSchema>;
+type Order = z.infer<typeof OrderSchema>;
+
+function generateOrderId(): string {
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `PED-${timestamp}-${random}`;
+}
 
 async function getGoogleSheetsClient() {
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
@@ -50,10 +60,10 @@ async function getGoogleSheetsClient() {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Google Sheets API route
-  app.post("/api/contact", async (req, res) => {
+  // Order API route
+  app.post("/api/order", async (req, res) => {
     try {
-      const validatedData = ContactFormSchema.parse(req.body);
+      const validatedData = OrderSchema.parse(req.body);
       
       // Get the spreadsheet ID from environment variable
       const spreadsheetId = process.env.GOOGLE_SHEETS_ID;
@@ -63,27 +73,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const sheetsClient = await getGoogleSheetsClient();
       
-      const timestamp = new Date().toLocaleString("es-MX");
+      const orderId = generateOrderId();
+      const now = new Date();
+      const fecha = now.toLocaleDateString("es-MX");
+      const hora = now.toLocaleTimeString("es-MX");
       
       // Append the data to the Google Sheet
       await sheetsClient.spreadsheets.values.append({
         spreadsheetId,
-        range: "Sheet1!A:D",
+        range: "Sheet1!A:I",
         valueInputOption: "USER_ENTERED",
         requestBody: {
           values: [
-            [timestamp, validatedData.nombre, validatedData.email, validatedData.telefono || "", validatedData.mensaje],
+            [
+              orderId,
+              fecha,
+              hora,
+              validatedData.nombre,
+              validatedData.telefono,
+              validatedData.direccion,
+              validatedData.tipoEntrega,
+              validatedData.formaPago,
+              validatedData.items,
+              validatedData.detallesAdicionales || "",
+              validatedData.total,
+            ],
           ],
         },
       });
 
-      res.json({ success: true, message: "Mensaje enviado exitosamente" });
+      res.json({ success: true, orderId, message: "Pedido creado exitosamente" });
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Datos inválidos", details: error.errors });
       }
-      console.error("Contact form error:", error);
-      res.status(500).json({ error: error.message || "Error al enviar el mensaje" });
+      console.error("Order error:", error);
+      res.status(500).json({ error: error.message || "Error al crear el pedido" });
     }
   });
 

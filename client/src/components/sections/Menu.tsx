@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Plus, Leaf, Flame, Star, Info } from 'lucide-react';
+import { Plus, Leaf, Flame, Star, Check } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useCart } from '@/context/CartContext';
+import { toast } from 'sonner';
 import margheritaImage from '@assets/generated_images/fresh_margherita_pizza_with_basil.png';
 import pepperoniImage from '@assets/generated_images/crispy_pepperoni_pizza_with_cheese.png';
 import quatroQuesosImage from '@assets/generated_images/gourmet_four_cheese_pizza.png';
@@ -41,6 +43,21 @@ const categories = [
 
 export function Menu() {
   const [activeTab, setActiveTab] = useState('clasicas');
+  const { addItem } = useCart();
+  const [addedItems, setAddedItems] = useState<Set<number>>(new Set());
+
+  const handleAddToCart = (item: any) => {
+    addItem({ id: item.id, name: item.name, price: item.price });
+    setAddedItems(new Set([...addedItems, item.id]));
+    toast.success(`${item.name} agregada al pedido`);
+    setTimeout(() => {
+      setAddedItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(item.id);
+        return newSet;
+      });
+    }, 2000);
+  };
 
   return (
     <section id="menu" className="py-24 bg-white">
@@ -106,8 +123,13 @@ export function Menu() {
                       <CardDescription className="text-base line-clamp-2">{item.desc}</CardDescription>
                     </CardHeader>
                     <CardFooter className="mt-auto pt-4">
-                      <Button className="w-full rounded-full group-hover:bg-primary group-hover:text-white transition-colors">
-                        <Plus size={18} className="mr-2" /> Agregar al Pedido
+                      <Button 
+                        onClick={() => handleAddToCart(item)}
+                        className={`w-full rounded-full transition-colors ${addedItems.has(item.id) ? 'bg-primary text-white' : 'group-hover:bg-primary group-hover:text-white'}`}
+                        data-testid={`button-add-${item.id}`}
+                      >
+                        {addedItems.has(item.id) ? <Check size={18} className="mr-2" /> : <Plus size={18} className="mr-2" />}
+                        {addedItems.has(item.id) ? 'Agregada' : 'Agregar al Pedido'}
                       </Button>
                     </CardFooter>
                   </Card>
