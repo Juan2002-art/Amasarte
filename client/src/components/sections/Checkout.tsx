@@ -83,9 +83,11 @@ export function Checkout() {
     setLoading(true);
 
     try {
+      const telefono = formData.telefono.startsWith('+57') ? formData.telefono : `+57${formData.telefono}`;
+      
       const orderData = {
         nombre: formData.nombre,
-        telefono: formData.telefono,
+        telefono: telefono,
         direccion: formData.direccion || 'N/A',
         tipoEntrega: formData.tipoEntrega,
         formaPago: formData.formaPago,
