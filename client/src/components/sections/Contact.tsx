@@ -43,7 +43,7 @@ export function Contact() {
                 <div>
                   <h3 className="font-bold text-xl mb-1" style={{ color: '#F5E8D0' }}>Llámanos</h3>
                   <a href="tel:+573006520811" style={{ color: '#F5E8D0' }} className="hover:text-orange-400 cursor-pointer transition-colors block">+57 300 6520811</a>
-                  <a href="https://wa.me/573006520811?text=Hola%20AMASARTE%2C%20me%20gustaría%20hacer%20un%20pedido" target="_blank" rel="noopener noreferrer" style={{ color: '#F5E8D0' }} className="hover:text-orange-400 cursor-pointer transition-colors block">WhatsApp: +57 300 6520811</a>
+                  <a href="https://wa.me/573006520811?text=Hola%20amaSSarte%2C%20me%20gustaría%20hacer%20un%20pedido" target="_blank" rel="noopener noreferrer" style={{ color: '#F5E8D0' }} className="hover:text-orange-400 cursor-pointer transition-colors block">WhatsApp: +57 300 6520811</a>
                 </div>
               </motion.div>
 
@@ -114,7 +114,7 @@ export function Contact() {
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Ubicación AMASARTE"
+              title="Ubicación amaSSarte"
             ></iframe>
           </motion.div>
 
