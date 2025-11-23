@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Plus, Leaf, Flame, Star, Check, X } from 'lucide-react';
+import { Plus, Leaf, Flame, Star, Check } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -41,6 +41,19 @@ const formatPrice = (price: number): string => {
   }).format(price);
 };
 
+// Size multipliers for pizza prices
+const sizeMultipliers = {
+  personal: 1,
+  mediana: 1.3,
+  grande: 1.7,
+};
+
+const sizeLabels = {
+  personal: 'Personal (25cm)',
+  mediana: 'Mediana (30cm)',
+  grande: 'Grande (40cm)',
+};
+
 // Mock Data
 const menuItems = {
   clasicas: [
@@ -58,6 +71,14 @@ const menuItems = {
     { id: 13, name: 'Rúcula y Parmesano', desc: 'Base blanca, rúcula fresca, virutas de parmesano, tomates asados, piñones.', price: 41000, tags: ['veg', 'gourmet'], image: ruguelaImage },
     { id: 14, name: 'BBQ Ahumada', desc: 'Carne ahumada, cebolla roja, cilantro, salsa BBQ artesanal.', price: 43000, tags: ['popular'], image: bbqImage },
     { id: 15, name: 'Camarones al Ajillo', desc: 'Base blanca, camarones al ajillo, limón, ajo tostado, perejil.', price: 45000, tags: ['chef-choice'], image: camaronesImage },
+  ],
+  porciones: [
+    { id: 101, name: 'Porción Margherita', desc: '1 Porción de Margherita crujiente.', price: 8000, tags: ['veg'], image: margheritaImage },
+    { id: 102, name: 'Porción Pepperoni', desc: '1 Porción de Pepperoni con doble queso.', price: 9000, tags: ['popular'], image: pepperoniImage },
+    { id: 103, name: 'Porción Cuatro Quesos', desc: '1 Porción gourmet de 4 quesos.', price: 10000, tags: ['veg'], image: quatroQuesosImage },
+    { id: 104, name: 'Porción Hawaiana', desc: '1 Porción de Hawaiana Artesanal.', price: 9000, tags: [], image: hawaianaImage },
+    { id: 105, name: 'Porción BBQ', desc: '1 Porción de BBQ Ahumada.', price: 11000, tags: [], image: bbqImage },
+    { id: 106, name: 'Porción Diavola', desc: '1 Porción picante Diavola.', price: 10500, tags: ['spicy'], image: diabolaImage },
   ],
   bebidas: [
     { id: 8, name: 'Limonada Casera', desc: 'Limones frescos, menta y un toque de jengibre.', price: 13000, tags: [], image: limonadaImage },
@@ -79,6 +100,7 @@ const allPizzas = [
 const categories = [
   { id: 'clasicas', label: 'Clásicas' },
   { id: 'especiales', label: 'Especiales' },
+  { id: 'porciones', label: 'Porciones' },
   { id: 'bebidas', label: 'Bebidas' },
 ];
 
@@ -98,18 +120,28 @@ export function Menu() {
   const [mitadPizza1, setMitadPizza1] = useState<any>(null);
   const [mitadPizza2, setMitadPizza2] = useState<any>(null);
   const [baseType, setBaseType] = useState('tomate');
+  const [selectedSize, setSelectedSize] = useState<'personal' | 'mediana' | 'grande'>('mediana');
 
-  const isBeverage = (item: any) => categories.find(c => c.id === 'bebidas')?.id === activeTab || menuItems.bebidas.find(b => b.id === item.id);
+  const isPizza = (item: any) => {
+    return activeTab === 'clasicas' || activeTab === 'especiales' || menuItems.especiales.find(p => p.id === item.id) || menuItems.clasicas.find(p => p.id === item.id);
+  };
+
+  const isBeverage = (item: any) => activeTab === 'bebidas' || menuItems.bebidas.find(b => b.id === item.id);
+
+  const isPortion = (item: any) => activeTab === 'porciones' || menuItems.porciones.find(p => p.id === item.id);
 
   const handleItemClick = (item: any) => {
     if (isBeverage(item)) {
       handleAddToCart(item);
-    } else {
+    } else if (isPortion(item)) {
+      handleAddToCart(item);
+    } else if (isPizza(item)) {
       setSelectedItem(item);
       setPizzaType('completa');
       setMitadPizza1(null);
       setMitadPizza2(null);
       setBaseType('tomate');
+      setSelectedSize('mediana');
       setDialogOpen(true);
     }
   };
@@ -133,16 +165,20 @@ export function Menu() {
       return;
     }
 
+    const priceWithSize = Math.round(selectedItem.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]);
+    const itemWithPrice = { ...selectedItem, price: priceWithSize };
+
     const options: PizzaOptions = {
       tipoPizza: pizzaType,
       tipoBase: baseType,
+      tamaño: selectedSize,
       ...(pizzaType === 'mitad' && {
         mitadPizza1: mitadPizza1 ? { id: mitadPizza1.id, name: mitadPizza1.name } : undefined,
         mitadPizza2: mitadPizza2 ? { id: mitadPizza2.id, name: mitadPizza2.name } : undefined,
       }),
     };
 
-    handleAddToCart(selectedItem, options);
+    handleAddToCart(itemWithPrice, options);
     setDialogOpen(false);
     setSelectedItem(null);
   };
@@ -299,6 +335,33 @@ export function Menu() {
                 )}
               </div>
             )}
+
+            {/* Size Selection */}
+            <div>
+              <Label className="text-base font-semibold mb-3 block">Tamaño de Pizza</Label>
+              <div className="space-y-3">
+                {(Object.entries(sizeLabels) as [keyof typeof sizeLabels, string][]).map(([size, label]) => {
+                  const sizePrice = Math.round(selectedItem?.price * sizeMultipliers[size]);
+                  return (
+                    <div key={size} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-blue-50 transition-colors cursor-pointer"
+                      onClick={() => setSelectedSize(size)}
+                    >
+                      <RadioGroupItem value={size} id={size} />
+                      <Label htmlFor={size} className="flex-1 cursor-pointer">
+                        <div className="font-semibold">{label}</div>
+                        <div className="text-sm text-muted-foreground">+ {formatPrice(sizePrice - (selectedItem?.price || 0))}</div>
+                      </Label>
+                      <span className="font-bold text-primary">{formatPrice(sizePrice)}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <RadioGroup value={selectedSize} onValueChange={(v: any) => setSelectedSize(v)} className="hidden">
+                {(Object.keys(sizeMultipliers) as (keyof typeof sizeMultipliers)[]).map(size => (
+                  <RadioGroupItem key={size} value={size} id={`radio-${size}`} />
+                ))}
+              </RadioGroup>
+            </div>
 
             {/* Base Type Selection */}
             <div>

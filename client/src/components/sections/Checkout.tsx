@@ -225,15 +225,24 @@ export function Checkout() {
                         >
                           <div className="flex-1">
                             <p className="font-semibold text-sm">{item.name}</p>
-                            {item.options?.tipoPizza === 'mitad' && (
-                              <p className="text-xs text-blue-600 mt-1">
-                                Mitad: {item.options.mitadPizza1?.name} + {item.options.mitadPizza2?.name}
-                              </p>
-                            )}
-                            {item.options?.tipoBase && (
-                              <p className="text-xs text-blue-600">
-                                Base: {item.options.tipoBase}
-                              </p>
+                            {item.options && typeof item.options === 'object' && 'tipoPizza' in item.options && (
+                              <>
+                                {item.options.tipoPizza === 'mitad' && (
+                                  <p className="text-xs text-blue-600 mt-1">
+                                    Mitad: {item.options.mitadPizza1?.name} + {item.options.mitadPizza2?.name}
+                                  </p>
+                                )}
+                                {item.options.tamaño && (
+                                  <p className="text-xs text-blue-600">
+                                    Tamaño: {item.options.tamaño}
+                                  </p>
+                                )}
+                                {item.options.tipoBase && (
+                                  <p className="text-xs text-blue-600">
+                                    Base: {item.options.tipoBase}
+                                  </p>
+                                )}
+                              </>
                             )}
                             <p className="text-xs text-muted-foreground mt-1">
                               {formatPrice(item.price)} x {item.quantity}

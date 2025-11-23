@@ -5,6 +5,14 @@ export interface PizzaOptions {
   mitadPizza1?: { id: number; name: string };
   mitadPizza2?: { id: number; name: string };
   tipoBase?: string;
+  tamaño?: 'personal' | 'mediana' | 'grande';
+  esPromocion?: boolean;
+  porcentajeDescuento?: number;
+}
+
+export interface PortionOptions {
+  cantidad: number;
+  esPromocion?: boolean;
 }
 
 export interface CartItem {
@@ -12,7 +20,8 @@ export interface CartItem {
   name: string;
   price: number;
   quantity: number;
-  options?: PizzaOptions;
+  options?: PizzaOptions | PortionOptions;
+  type?: 'pizza' | 'porcion' | 'bebida';
 }
 
 interface CartContextType {
