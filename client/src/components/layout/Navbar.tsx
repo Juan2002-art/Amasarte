@@ -17,6 +17,17 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
+
   const navLinks = [
     { name: 'Inicio', href: '#hero' },
     { name: 'Sobre Nosotros', href: '#about' },
@@ -78,10 +89,44 @@ export function Navbar() {
           </Button>
         </nav>
 
-        {/* Mobile Toggle - Hidden */}
+        {/* Mobile Toggle */}
+        <button
+          className="md:hidden"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <X size={28} style={{ color: '#FF8533' }} /> : <Menu size={28} color={isScrolled ? '#FF8533' : '#FFFFFF'} />}
+        </button>
       </div>
 
-      {/* Mobile Menu - Hidden */}
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="absolute top-full left-0 right-0 bg-white shadow-lg p-6 md:hidden flex flex-col gap-4 border-t"
+          >
+            {navLinks.map((link) => (
+              <button
+                key={link.name}
+                onClick={() => scrollToSection(link.href)}
+                className="text-left text-lg font-medium text-foreground hover:text-primary py-2 border-b border-gray-100"
+              >
+                {link.name}
+              </button>
+            ))}
+            <Button 
+              className="w-full rounded-full mt-2" 
+              size="lg"
+              onClick={() => scrollToSection('#checkout')}
+              data-testid="button-order-navbar-mobile"
+            >
+              Hacer Pedido Online
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
