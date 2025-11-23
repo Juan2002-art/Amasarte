@@ -292,7 +292,7 @@ export function Menu() {
                 <p className="text-sm font-medium" style={{ color: '#F5E8D0' }}>Selecciona mitad de 2 pizzas diferentes:</p>
                 
                 <div>
-                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#1A3A3B' }}>Primera Pizza (Mitad)</Label>
+                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#FFFFFF' }}>Primera Pizza (Mitad)</Label>
                   <select 
                     value={mitadCadaPizza1?.id || ''} 
                     onChange={(e) => {
@@ -310,7 +310,7 @@ export function Menu() {
                 </div>
 
                 <div>
-                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#1A3A3B' }}>Segunda Pizza (Mitad)</Label>
+                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#FFFFFF' }}>Segunda Pizza (Mitad)</Label>
                   <select 
                     value={mitadCadaPizza2?.id || ''} 
                     onChange={(e) => {
@@ -347,10 +347,14 @@ export function Menu() {
                 <div className="space-y-3">
                   {(Object.entries(sizeLabels) as [keyof typeof sizeLabels, string][]).map(([size, label]) => {
                     let displayPrice = 0;
-                    if (isMitadDeCadaPizza && mitadCadaPizza1 && mitadCadaPizza2) {
-                      const halfPrice1 = Math.round((mitadCadaPizza1.price * sizeMultipliers[size]) / 2);
-                      const halfPrice2 = Math.round((mitadCadaPizza2.price * sizeMultipliers[size]) / 2);
-                      displayPrice = halfPrice1 + halfPrice2;
+                    if (isMitadDeCadaPizza) {
+                      if (mitadCadaPizza1 && mitadCadaPizza2) {
+                        const halfPrice1 = Math.round((mitadCadaPizza1.price * sizeMultipliers[size]) / 2);
+                        const halfPrice2 = Math.round((mitadCadaPizza2.price * sizeMultipliers[size]) / 2);
+                        displayPrice = halfPrice1 + halfPrice2;
+                      } else {
+                        displayPrice = 0;
+                      }
                     } else {
                       displayPrice = Math.round(selectedItem?.price * sizeMultipliers[size]);
                     }
