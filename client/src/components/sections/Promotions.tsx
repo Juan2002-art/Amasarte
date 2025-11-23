@@ -434,13 +434,13 @@ export function Promotions() {
       <Dialog open={promo1DialogOpen} onOpenChange={setPromo1DialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>2x1 en Pizzas Personales</DialogTitle>
+            <DialogTitle style={{ color: '#F5E8D0' }}>2x1 en Pizzas Personales</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">Selecciona 2 pizzas clásicas tamaño personal (compra 1, lleva 2)</p>
+            <p className="text-sm" style={{ color: '#F5E8D0' }}>Selecciona 2 pizzas clásicas tamaño personal (compra 1, lleva 2)</p>
             
             <div>
-              <Label className="font-semibold mb-2 block">Primera Pizza</Label>
+              <Label className="font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Primera Pizza</Label>
               <select 
                 value={promo1Pizza1?.id || ''} 
                 onChange={(e) => {
@@ -457,7 +457,7 @@ export function Promotions() {
             </div>
 
             <div>
-              <Label className="font-semibold mb-2 block">Segunda Pizza</Label>
+              <Label className="font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Segunda Pizza</Label>
               <select 
                 value={promo1Pizza2?.id || ''} 
                 onChange={(e) => {
@@ -474,19 +474,19 @@ export function Promotions() {
             </div>
 
             {promo1Pizza1 && promo1Pizza2 && (
-              <div className="p-3 bg-green-50 rounded border-l-4 border-green-500">
-                <p className="text-sm font-semibold text-green-700">✓ Combo: {promo1Pizza1.name} + {promo1Pizza2.name}</p>
-                <p className="text-xs text-green-600 mt-1">Precio: {formatPrice(16000)}</p>
+              <div className="p-3 rounded border-l-4" style={{ backgroundColor: '#1A3A3B', borderLeftColor: '#FF8533' }}>
+                <p className="text-sm font-semibold" style={{ color: '#FF8533' }}>✓ Combo: {promo1Pizza1.name} + {promo1Pizza2.name}</p>
+                <p className="text-xs mt-1" style={{ color: '#F5E8D0' }}>Precio: {formatPrice(16000)}</p>
               </div>
             )}
 
             <div>
-              <Label className="font-semibold mb-3 block">Tipo de Base</Label>
+              <Label className="font-semibold mb-3 block" style={{ color: '#F5E8D0' }}>Tipo de Base</Label>
               <RadioGroup value={promo1Base} onValueChange={setPromo1Base}>
                 {baseOptions.map(option => (
                   <div key={option.value} className="flex items-center space-x-2 mb-2">
                     <RadioGroupItem value={option.value} id={`promo1-${option.value}`} />
-                    <Label htmlFor={`promo1-${option.value}`} className="text-sm cursor-pointer">{option.label}</Label>
+                    <Label htmlFor={`promo1-${option.value}`} className="text-sm cursor-pointer" style={{ color: '#F5E8D0' }}>{option.label}</Label>
                   </div>
                 ))}
               </RadioGroup>
@@ -503,21 +503,21 @@ export function Promotions() {
       <Dialog open={promo2DialogOpen} onOpenChange={setPromo2DialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Pizza Grande -50%</DialogTitle>
+            <DialogTitle style={{ color: '#F5E8D0' }}>Pizza Grande -50%</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">Selecciona cualquier pizza en tamaño grande con 50% descuento</p>
+            <p className="text-sm" style={{ color: '#F5E8D0' }}>Selecciona cualquier pizza en tamaño grande con 50% descuento</p>
             
             <div>
-              <Label className="font-semibold mb-2 block">Tipo de Pizza</Label>
+              <Label className="font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Tipo de Pizza</Label>
               <RadioGroup value={promo2Type} onValueChange={(v: any) => setPromo2Type(v)}>
                 <div className="flex items-center space-x-2 mb-2">
                   <RadioGroupItem value="completa" id="promo2-completa" />
-                  <Label htmlFor="promo2-completa" className="text-sm cursor-pointer">Pizza Completa</Label>
+                  <Label htmlFor="promo2-completa" className="text-sm cursor-pointer" style={{ color: '#F5E8D0' }}>Pizza Completa</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="mitadCadaPizza" id="promo2-mitad-cada-pizza" />
-                  <Label htmlFor="promo2-mitad-cada-pizza" className="text-sm cursor-pointer">Mitad de Cada Pizza</Label>
+                  <Label htmlFor="promo2-mitad-cada-pizza" className="text-sm cursor-pointer" style={{ color: '#F5E8D0' }}>Mitad de Cada Pizza</Label>
                 </div>
               </RadioGroup>
             </div>
@@ -525,7 +525,7 @@ export function Promotions() {
             {promo2Type === 'completa' && (
               <>
                 <div>
-                  <Label className="font-semibold mb-2 block">Selecciona tu Pizza</Label>
+                  <Label className="font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Selecciona tu Pizza</Label>
                   <select 
                     value={promo2Pizza?.id || ''} 
                     onChange={(e) => {
@@ -542,10 +542,10 @@ export function Promotions() {
                 </div>
 
                 {promo2Pizza && (
-                  <div className="p-3 bg-blue-50 rounded border-l-4 border-blue-500">
-                    <p className="text-sm font-semibold text-blue-700">{promo2Pizza.name} Grande</p>
-                    <p className="text-xs text-blue-600 mt-1">Precio original: {formatPrice(Math.round(promo2Pizza.price * 1.7))}</p>
-                    <p className="text-xs font-bold text-blue-700 mt-1">Con descuento: {formatPrice(Math.round(promo2Pizza.price * 1.7 * 0.5))}</p>
+                  <div className="p-3 rounded border-l-4" style={{ backgroundColor: '#1A3A3B', borderLeftColor: '#FF8533' }}>
+                    <p className="text-sm font-semibold" style={{ color: '#FF8533' }}>{promo2Pizza.name} Grande</p>
+                    <p className="text-xs mt-1" style={{ color: '#F5E8D0' }}>Precio original: {formatPrice(Math.round(promo2Pizza.price * 1.7))}</p>
+                    <p className="text-xs font-bold mt-1" style={{ color: '#FF8533' }}>Con descuento: {formatPrice(Math.round(promo2Pizza.price * 1.7 * 0.5))}</p>
                   </div>
                 )}
               </>
@@ -554,7 +554,7 @@ export function Promotions() {
             {promo2Type === 'mitadCadaPizza' && (
               <>
                 <div>
-                  <Label className="font-semibold mb-2 block">Primera Pizza (Mitad)</Label>
+                  <Label className="font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Primera Pizza (Mitad)</Label>
                   <select 
                     value={promo2MitadPizza1?.id || ''} 
                     onChange={(e) => {
@@ -571,7 +571,7 @@ export function Promotions() {
                 </div>
 
                 <div>
-                  <Label className="font-semibold mb-2 block">Segunda Pizza (Mitad)</Label>
+                  <Label className="font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Segunda Pizza (Mitad)</Label>
                   <select 
                     value={promo2MitadPizza2?.id || ''} 
                     onChange={(e) => {
@@ -588,13 +588,13 @@ export function Promotions() {
                 </div>
 
                 {promo2MitadPizza1 && promo2MitadPizza2 && (
-                  <div className="p-3 bg-purple-50 rounded border-l-4 border-purple-500">
-                    <p className="text-sm font-semibold text-purple-700">✓ Mitad {promo2MitadPizza1.name} + Mitad {promo2MitadPizza2.name} Grande</p>
-                    <div className="text-xs text-purple-600 mt-2 space-y-1">
+                  <div className="p-3 rounded border-l-4" style={{ backgroundColor: '#1A3A3B', borderLeftColor: '#FF8533' }}>
+                    <p className="text-sm font-semibold" style={{ color: '#FF8533' }}>✓ Mitad {promo2MitadPizza1.name} + Mitad {promo2MitadPizza2.name} Grande</p>
+                    <div className="text-xs mt-2 space-y-1" style={{ color: '#F5E8D0' }}>
                       <div>Mitad {promo2MitadPizza1.name}: {formatPrice(Math.round((promo2MitadPizza1.price * 1.7) / 2))}</div>
                       <div>Mitad {promo2MitadPizza2.name}: {formatPrice(Math.round((promo2MitadPizza2.price * 1.7) / 2))}</div>
                       <div className="font-bold">Original: {formatPrice(Math.round((promo2MitadPizza1.price * 1.7) / 2) + Math.round((promo2MitadPizza2.price * 1.7) / 2))}</div>
-                      <div className="text-green-600 font-bold">Con 50% descuento: {formatPrice(Math.round((Math.round((promo2MitadPizza1.price * 1.7) / 2) + Math.round((promo2MitadPizza2.price * 1.7) / 2)) * 0.5))}</div>
+                      <div className="font-bold" style={{ color: '#FF8533' }}>Con 50% descuento: {formatPrice(Math.round((Math.round((promo2MitadPizza1.price * 1.7) / 2) + Math.round((promo2MitadPizza2.price * 1.7) / 2)) * 0.5))}</div>
                     </div>
                   </div>
                 )}
@@ -602,12 +602,12 @@ export function Promotions() {
             )}
 
             <div>
-              <Label className="font-semibold mb-3 block">Tipo de Base</Label>
+              <Label className="font-semibold mb-3 block" style={{ color: '#F5E8D0' }}>Tipo de Base</Label>
               <RadioGroup value={promo2Base} onValueChange={setPromo2Base}>
                 {baseOptions.map(option => (
                   <div key={option.value} className="flex items-center space-x-2 mb-2">
                     <RadioGroupItem value={option.value} id={`promo2-${option.value}`} />
-                    <Label htmlFor={`promo2-${option.value}`} className="text-sm cursor-pointer">{option.label}</Label>
+                    <Label htmlFor={`promo2-${option.value}`} className="text-sm cursor-pointer" style={{ color: '#F5E8D0' }}>{option.label}</Label>
                   </div>
                 ))}
               </RadioGroup>

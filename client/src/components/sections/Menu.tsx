@@ -288,11 +288,11 @@ export function Menu() {
           <div className="space-y-6">
             {/* Mitad de Cada Pizza Selection */}
             {isMitadDeCadaPizza && (
-              <div className="bg-purple-50 p-4 rounded-lg space-y-4">
-                <p className="text-sm font-medium text-purple-900">Selecciona mitad de 2 pizzas diferentes:</p>
+              <div className="p-4 rounded-lg space-y-4" style={{ backgroundColor: '#2A5A5B' }}>
+                <p className="text-sm font-medium" style={{ color: '#F5E8D0' }}>Selecciona mitad de 2 pizzas diferentes:</p>
                 
                 <div>
-                  <Label className="text-base font-semibold mb-2 block">Primera Pizza (Mitad)</Label>
+                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Primera Pizza (Mitad)</Label>
                   <select 
                     value={mitadCadaPizza1?.id || ''} 
                     onChange={(e) => {
@@ -310,7 +310,7 @@ export function Menu() {
                 </div>
 
                 <div>
-                  <Label className="text-base font-semibold mb-2 block">Segunda Pizza (Mitad)</Label>
+                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Segunda Pizza (Mitad)</Label>
                   <select 
                     value={mitadCadaPizza2?.id || ''} 
                     onChange={(e) => {
@@ -328,12 +328,12 @@ export function Menu() {
                 </div>
 
                 {mitadCadaPizza1 && mitadCadaPizza2 && (
-                  <div className="mt-3 p-3 bg-white rounded border-l-4 border-purple-500">
-                    <p className="text-sm font-semibold text-purple-700">✓ Combinación: Mitad {mitadCadaPizza1.name} + Mitad {mitadCadaPizza2.name}</p>
-                    <div className="text-xs text-purple-600 mt-2 space-y-1">
+                  <div className="mt-3 p-3 rounded border-l-4" style={{ backgroundColor: '#1A3A3B', borderLeftColor: '#FF8533' }}>
+                    <p className="text-sm font-semibold" style={{ color: '#FF8533' }}>✓ Combinación: Mitad {mitadCadaPizza1.name} + Mitad {mitadCadaPizza2.name}</p>
+                    <div className="text-xs mt-2 space-y-1" style={{ color: '#F5E8D0' }}>
                       <div>Mitad {mitadCadaPizza1.name}: {formatPrice(Math.round((mitadCadaPizza1.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]) / 2))}</div>
                       <div>Mitad {mitadCadaPizza2.name}: {formatPrice(Math.round((mitadCadaPizza2.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]) / 2))}</div>
-                      <div className="font-bold">Total: {formatPrice(Math.round((mitadCadaPizza1.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]) / 2) + Math.round((mitadCadaPizza2.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]) / 2))}</div>
+                      <div className="font-bold" style={{ color: '#FF8533' }}>Total: {formatPrice(Math.round((mitadCadaPizza1.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]) / 2) + Math.round((mitadCadaPizza2.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]) / 2))}</div>
                     </div>
                   </div>
                 )}
@@ -342,21 +342,28 @@ export function Menu() {
 
             {/* Size Selection */}
             <div>
-              <Label className="text-base font-semibold mb-3 block">Tamaño de Pizza</Label>
+              <Label className="text-base font-semibold mb-3 block" style={{ color: '#F5E8D0' }}>Tamaño de Pizza</Label>
               <RadioGroup value={selectedSize} onValueChange={(v: any) => setSelectedSize(v)}>
                 <div className="space-y-3">
                   {(Object.entries(sizeLabels) as [keyof typeof sizeLabels, string][]).map(([size, label]) => {
-                    const sizePrice = Math.round(selectedItem?.price * sizeMultipliers[size]);
+                    let displayPrice = 0;
+                    if (isMitadDeCadaPizza && mitadCadaPizza1 && mitadCadaPizza2) {
+                      const halfPrice1 = Math.round((mitadCadaPizza1.price * sizeMultipliers[size]) / 2);
+                      const halfPrice2 = Math.round((mitadCadaPizza2.price * sizeMultipliers[size]) / 2);
+                      displayPrice = halfPrice1 + halfPrice2;
+                    } else {
+                      displayPrice = Math.round(selectedItem?.price * sizeMultipliers[size]);
+                    }
                     return (
-                      <div key={size} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-blue-50 transition-colors cursor-pointer"
+                      <div key={size} className="flex items-center space-x-2 p-3 border rounded-lg transition-colors cursor-pointer" style={{ backgroundColor: '#2A5A5B', borderColor: '#FF8533', color: '#F5E8D0' }}
                         onClick={() => setSelectedSize(size)}
                       >
                         <RadioGroupItem value={size} id={size} />
                         <Label htmlFor={size} className="flex-1 cursor-pointer">
                           <div className="font-semibold">{label}</div>
-                          <div className="text-sm text-muted-foreground">+ {formatPrice(sizePrice - (selectedItem?.price || 0))}</div>
+                          <div className="text-sm" style={{ color: '#F5E8D0' }}>+ {formatPrice(displayPrice - (selectedItem?.price || 0))}</div>
                         </Label>
-                        <span className="font-bold text-primary">{formatPrice(sizePrice)}</span>
+                        <span className="font-bold" style={{ color: '#FF8533' }}>{formatPrice(displayPrice)}</span>
                       </div>
                     );
                   })}
@@ -366,12 +373,12 @@ export function Menu() {
 
             {/* Base Type Selection */}
             <div>
-              <Label className="text-base font-semibold mb-3 block">Tipo de Base</Label>
+              <Label className="text-base font-semibold mb-3 block" style={{ color: '#F5E8D0' }}>Tipo de Base</Label>
               <RadioGroup value={baseType} onValueChange={setBaseType}>
                 {baseOptions.map(option => (
                   <div key={option.value} className="flex items-center space-x-2 mb-3">
                     <RadioGroupItem value={option.value} id={option.value} />
-                    <Label htmlFor={option.value} className="text-base cursor-pointer">{option.label}</Label>
+                    <Label htmlFor={option.value} className="text-base cursor-pointer" style={{ color: '#F5E8D0' }}>{option.label}</Label>
                   </div>
                 ))}
               </RadioGroup>
