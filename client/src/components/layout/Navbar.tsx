@@ -51,10 +51,16 @@ export function Navbar() {
             <button
               key={link.name}
               onClick={() => scrollToSection(link.href)}
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                isScrolled ? "text-foreground" : "text-white hover:text-green-300"
-              )}
+              className="text-sm font-medium transition-colors"
+              style={{
+                color: isScrolled ? '#FF8533' : '#FFFFFF',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = isScrolled ? '#FFB366' : '#00FF00';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = isScrolled ? '#FF8533' : '#FFFFFF';
+              }}
             >
               {link.name}
             </button>
@@ -71,10 +77,10 @@ export function Navbar() {
 
         {/* Mobile Toggle */}
         <button
-          className="md:hidden text-primary"
+          className="md:hidden"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} color={isScrolled ? '#1E8449' : '#FFFFFF'} />}
+          {isMobileMenuOpen ? <X size={28} style={{ color: '#FF8533' }} /> : <Menu size={28} color={isScrolled ? '#FF8533' : '#FFFFFF'} />}
         </button>
       </div>
 
