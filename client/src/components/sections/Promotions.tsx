@@ -533,6 +533,7 @@ export function Promotions() {
                       setPromo2Pizza(pizza);
                     }}
                     className="w-full px-3 py-2 border rounded-md bg-white"
+                    style={{ color: '#FF8533', fontWeight: 'bold' }}
                   >
                     <option value="">Selecciona una pizza...</option>
                     {allPizzas.map(p => (
@@ -562,6 +563,7 @@ export function Promotions() {
                       setPromo2MitadPizza1(pizza);
                     }}
                     className="w-full px-3 py-2 border rounded-md bg-white"
+                    style={{ color: '#FF8533', fontWeight: 'bold' }}
                   >
                     <option value="">Selecciona una pizza...</option>
                     {allPizzas.map(p => (
@@ -579,6 +581,7 @@ export function Promotions() {
                       setPromo2MitadPizza2(pizza);
                     }}
                     className="w-full px-3 py-2 border rounded-md bg-white"
+                    style={{ color: '#FF8533', fontWeight: 'bold' }}
                   >
                     <option value="">Selecciona una pizza...</option>
                     {allPizzas.map(p => (

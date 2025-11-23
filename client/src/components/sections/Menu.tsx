@@ -300,6 +300,7 @@ export function Menu() {
                       setMitadCadaPizza1(pizza);
                     }}
                     className="w-full px-3 py-2 border rounded-md bg-white"
+                    style={{ color: '#FF8533', fontWeight: 'bold' }}
                     data-testid="select-mitad-cada-pizza-1"
                   >
                     <option value="">Selecciona una pizza...</option>
@@ -318,6 +319,7 @@ export function Menu() {
                       setMitadCadaPizza2(pizza);
                     }}
                     className="w-full px-3 py-2 border rounded-md bg-white"
+                    style={{ color: '#FF8533', fontWeight: 'bold' }}
                     data-testid="select-mitad-cada-pizza-2"
                   >
                     <option value="">Selecciona una pizza...</option>
