@@ -4,10 +4,12 @@ import { Menu, X, ShoppingBag, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useCart } from '@/context/CartContext';
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { setIsOpen } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,6 +66,7 @@ export function Navbar() {
           <Button 
             variant={isScrolled ? "default" : "secondary"}
             className="rounded-full font-semibold"
+            onClick={() => setIsOpen(true)}
           >
             Hacer Pedido
           </Button>
@@ -96,7 +99,10 @@ export function Navbar() {
                 {link.name}
               </button>
             ))}
-            <Button className="w-full rounded-full mt-2" size="lg">
+            <Button className="w-full rounded-full mt-2" size="lg" onClick={() => {
+              setIsOpen(true);
+              setIsMobileMenuOpen(false);
+            }}>
               Hacer Pedido Online
             </Button>
           </motion.div>

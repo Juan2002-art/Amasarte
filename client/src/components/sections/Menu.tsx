@@ -6,6 +6,7 @@ import { Plus, Leaf, Flame, Star, Info } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import pizzaImage from '@assets/generated_images/margherita_pizza_menu_item.png';
+import { useCart } from '@/context/CartContext';
 
 // Mock Data
 const menuItems = {
@@ -35,6 +36,7 @@ const categories = [
 
 export function Menu() {
   const [activeTab, setActiveTab] = useState('clasicas');
+  const { addItem } = useCart();
 
   return (
     <section id="menu" className="py-24 bg-white">
@@ -100,7 +102,15 @@ export function Menu() {
                       <CardDescription className="text-base line-clamp-2">{item.desc}</CardDescription>
                     </CardHeader>
                     <CardFooter className="mt-auto pt-4">
-                      <Button className="w-full rounded-full group-hover:bg-primary group-hover:text-white transition-colors">
+                      <Button 
+                        className="w-full rounded-full group-hover:bg-primary group-hover:text-white transition-colors"
+                        onClick={() => addItem({
+                          id: item.id,
+                          name: item.name,
+                          price: item.price,
+                          image: item.image || undefined
+                        })}
+                      >
                         <Plus size={18} className="mr-2" /> Agregar al Pedido
                       </Button>
                     </CardFooter>
