@@ -40,6 +40,29 @@ const categories = [
   { id: 'bebidas', label: 'Bebidas' },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
+};
+
 export function Menu() {
   const [activeTab, setActiveTab] = useState('clasicas');
   const { addItem } = useCart();
@@ -47,15 +70,27 @@ export function Menu() {
   return (
     <section id="menu" className="py-24 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <motion.div 
+          className="text-center max-w-3xl mx-auto mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Nuestro Menú</h2>
           <p className="text-muted-foreground text-lg">
             Sabores auténticos creados con ingredientes frescos y mucho amor.
           </p>
-        </div>
+        </motion.div>
 
         <Tabs defaultValue="clasicas" className="w-full" onValueChange={setActiveTab}>
-          <div className="flex justify-center mb-12 overflow-x-auto pb-2">
+          <motion.div 
+            className="flex justify-center mb-12 overflow-x-auto pb-2"
+            initial={{ opacity: 0, y: -10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <TabsList className="bg-muted/50 p-1 h-auto rounded-full">
               {categories.map((cat) => (
                 <TabsTrigger
@@ -67,7 +102,7 @@ export function Menu() {
                 </TabsTrigger>
               ))}
             </TabsList>
-          </div>
+          </motion.div>
 
           {categories.map((cat) => (
             <TabsContent key={cat.id} value={cat.id} className="mt-0">
@@ -77,63 +112,94 @@ export function Menu() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4 }}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                variants={containerVariants}
               >
-                {menuItems[cat.id as keyof typeof menuItems].map((item) => (
-                  <Card key={item.id} className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 bg-white h-full flex flex-col" data-testid={`card-pizza-${item.id}`}>
-                    {item.image && (
-                      <div className="relative h-56 overflow-hidden">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          data-testid={`img-pizza-${item.id}`}
-                        />
-                        <div className="absolute top-3 right-3 flex flex-col gap-2">
-                          {item.tags.includes('veg') && (
-                            <Badge className="bg-green-500 hover:bg-green-600"><Leaf size={12} className="mr-1" /> Veg</Badge>
-                          )}
-                          {item.tags.includes('spicy') && (
-                            <Badge className="bg-red-500 hover:bg-red-600"><Flame size={12} className="mr-1" /> Hot</Badge>
-                          )}
-                          {item.tags.includes('popular') && (
-                            <Badge className="bg-amber-500 hover:bg-amber-600"><Star size={12} className="mr-1" /> Top</Badge>
-                          )}
+                {menuItems[cat.id as keyof typeof menuItems].map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    variants={itemVariants}
+                    whileHover={{ y: -10, transition: { duration: 0.3 } }}
+                  >
+                    <Card 
+                      className="group overflow-hidden border-none shadow-md hover:shadow-2xl transition-all duration-300 bg-white h-full flex flex-col" 
+                      data-testid={`card-pizza-${item.id}`}
+                    >
+                      {item.image && (
+                        <motion.div 
+                          className="relative h-56 overflow-hidden"
+                          whileHover={{ scale: 1.05 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            data-testid={`img-pizza-${item.id}`}
+                          />
+                          <motion.div 
+                            className="absolute top-3 right-3 flex flex-col gap-2"
+                            initial={{ opacity: 0, x: 20 }}
+                            whileHover={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            {item.tags.includes('veg') && (
+                              <Badge className="bg-green-500 hover:bg-green-600"><Leaf size={12} className="mr-1" /> Veg</Badge>
+                            )}
+                            {item.tags.includes('spicy') && (
+                              <Badge className="bg-red-500 hover:bg-red-600"><Flame size={12} className="mr-1" /> Hot</Badge>
+                            )}
+                            {item.tags.includes('popular') && (
+                              <Badge className="bg-amber-500 hover:bg-amber-600"><Star size={12} className="mr-1" /> Top</Badge>
+                            )}
+                          </motion.div>
+                        </motion.div>
+                      )}
+                      <CardHeader className={item.image ? 'pt-6' : ''}>
+                        <div className="flex justify-between items-start mb-2">
+                          <CardTitle className="text-xl font-bold" data-testid={`text-pizza-name-${item.id}`}>{item.name}</CardTitle>
+                          <span className="text-lg font-bold text-primary" data-testid={`text-pizza-price-${item.id}`}>${item.price}</span>
                         </div>
-                      </div>
-                    )}
-                    <CardHeader className={item.image ? 'pt-6' : ''}>
-                      <div className="flex justify-between items-start mb-2">
-                        <CardTitle className="text-xl font-bold" data-testid={`text-pizza-name-${item.id}`}>{item.name}</CardTitle>
-                        <span className="text-lg font-bold text-primary" data-testid={`text-pizza-price-${item.id}`}>${item.price}</span>
-                      </div>
-                      <CardDescription className="text-base line-clamp-2" data-testid={`text-pizza-desc-${item.id}`}>{item.desc}</CardDescription>
-                    </CardHeader>
-                    <CardFooter className="mt-auto pt-4">
-                      <Button 
-                        className="w-full rounded-full group-hover:bg-primary group-hover:text-white transition-colors"
-                        onClick={() => addItem({
-                          id: item.id,
-                          name: item.name,
-                          price: item.price,
-                          image: item.image || undefined
-                        })}
-                        data-testid={`button-add-pizza-${item.id}`}
-                      >
-                        <Plus size={18} className="mr-2" /> Agregar al Pedido
-                      </Button>
-                    </CardFooter>
-                  </Card>
+                        <CardDescription className="text-base line-clamp-2" data-testid={`text-pizza-desc-${item.id}`}>{item.desc}</CardDescription>
+                      </CardHeader>
+                      <CardFooter className="mt-auto pt-4">
+                        <motion.div 
+                          className="w-full"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <Button 
+                            className="w-full rounded-full group-hover:bg-primary group-hover:text-white transition-colors"
+                            onClick={() => addItem({
+                              id: item.id,
+                              name: item.name,
+                              price: item.price,
+                              image: item.image || undefined
+                            })}
+                            data-testid={`button-add-pizza-${item.id}`}
+                          >
+                            <Plus size={18} className="mr-2" /> Agregar al Pedido
+                          </Button>
+                        </motion.div>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
                 ))}
               </motion.div>
             </TabsContent>
           ))}
         </Tabs>
 
-        <div className="mt-16 text-center">
+        <motion.div 
+          className="mt-16 text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+        >
           <Button variant="outline" size="lg" className="rounded-full border-primary text-primary hover:bg-primary hover:text-white" data-testid="button-download-pdf">
             Descargar Menú PDF
           </Button>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
