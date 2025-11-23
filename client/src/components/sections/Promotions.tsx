@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useCart, PizzaOptions } from '@/context/CartContext';
 import { toast } from 'sonner';
 import { Gift, Flame, Star, Check } from 'lucide-react';
@@ -58,6 +59,12 @@ const bebidas = [
   { id: 20, name: 'Gaseosa Premium', price: 9000 },
 ];
 
+const baseOptions = [
+  { value: 'tomate', label: 'Salsa de Tomate' },
+  { value: 'blanca', label: 'Base Blanca (Crema)' },
+  { value: 'barbeque', label: 'Base BBQ' },
+];
+
 const promotions: any[] = [
   {
     id: 'promo-1',
@@ -104,10 +111,12 @@ export function Promotions() {
   const [promo1DialogOpen, setPromo1DialogOpen] = useState(false);
   const [promo1Pizza1, setPromo1Pizza1] = useState<any>(null);
   const [promo1Pizza2, setPromo1Pizza2] = useState<any>(null);
+  const [promo1Base, setPromo1Base] = useState('tomate');
 
   // Promo-2 state
   const [promo2DialogOpen, setPromo2DialogOpen] = useState(false);
   const [promo2Pizza, setPromo2Pizza] = useState<any>(null);
+  const [promo2Base, setPromo2Base] = useState('tomate');
 
   // Promo-3 state
   const [promo3DialogOpen, setPromo3DialogOpen] = useState(false);
@@ -118,6 +127,7 @@ export function Promotions() {
   const handlePromo1Click = () => {
     setPromo1Pizza1(null);
     setPromo1Pizza2(null);
+    setPromo1Base('tomate');
     setPromo1DialogOpen(true);
   };
 
@@ -127,7 +137,8 @@ export function Promotions() {
       return;
     }
 
-    const itemName = `2x1 ${promo1Pizza1.name} + ${promo1Pizza2.name} (Personal)`;
+    const baseLabelMap: any = { tomate: 'Tomate', blanca: 'Blanca', barbeque: 'BBQ' };
+    const itemName = `2x1 ${promo1Pizza1.name} + ${promo1Pizza2.name} (Personal, Base ${baseLabelMap[promo1Base]})`;
     addItem(
       {
         id: 201,
@@ -137,6 +148,7 @@ export function Promotions() {
       {
         esPromocion: true,
         porcentajeDescuento: 50,
+        tipoBase: promo1Base,
       }
     );
 
@@ -156,6 +168,7 @@ export function Promotions() {
   // Handlers for Promo-2
   const handlePromo2Click = () => {
     setPromo2Pizza(null);
+    setPromo2Base('tomate');
     setPromo2DialogOpen(true);
   };
 
@@ -165,9 +178,10 @@ export function Promotions() {
       return;
     }
 
+    const baseLabelMap: any = { tomate: 'Tomate', blanca: 'Blanca', barbeque: 'BBQ' };
     const grandePrice = Math.round(promo2Pizza.price * 1.7);
     const promoPrice = Math.round(grandePrice * 0.5);
-    const itemName = `${promo2Pizza.name} Grande -50%`;
+    const itemName = `${promo2Pizza.name} Grande -50% (Base ${baseLabelMap[promo2Base]})`;
 
     addItem(
       {
@@ -179,6 +193,7 @@ export function Promotions() {
         esPromocion: true,
         porcentajeDescuento: 50,
         tamaño: 'grande',
+        tipoBase: promo2Base,
       }
     );
 
@@ -412,6 +427,18 @@ export function Promotions() {
                 <p className="text-xs text-green-600 mt-1">Precio: {formatPrice(16000)}</p>
               </div>
             )}
+
+            <div>
+              <Label className="font-semibold mb-3 block">Tipo de Base</Label>
+              <RadioGroup value={promo1Base} onValueChange={setPromo1Base}>
+                {baseOptions.map(option => (
+                  <div key={option.value} className="flex items-center space-x-2 mb-2">
+                    <RadioGroupItem value={option.value} id={`promo1-${option.value}`} />
+                    <Label htmlFor={`promo1-${option.value}`} className="text-sm cursor-pointer">{option.label}</Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setPromo1DialogOpen(false)}>Cancelar</Button>
@@ -453,6 +480,18 @@ export function Promotions() {
                 <p className="text-xs font-bold text-blue-700 mt-1">Con descuento: {formatPrice(Math.round(promo2Pizza.price * 1.7 * 0.5))}</p>
               </div>
             )}
+
+            <div>
+              <Label className="font-semibold mb-3 block">Tipo de Base</Label>
+              <RadioGroup value={promo2Base} onValueChange={setPromo2Base}>
+                {baseOptions.map(option => (
+                  <div key={option.value} className="flex items-center space-x-2 mb-2">
+                    <RadioGroupItem value={option.value} id={`promo2-${option.value}`} />
+                    <Label htmlFor={`promo2-${option.value}`} className="text-sm cursor-pointer">{option.label}</Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setPromo2DialogOpen(false)}>Cancelar</Button>
