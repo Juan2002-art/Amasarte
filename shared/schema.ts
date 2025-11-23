@@ -23,9 +23,13 @@ export const orders = pgTable("orders", {
   phone: text("phone").notNull(),
   orderType: text("order_type").notNull(),
   address: text("address"),
-  notes: text("notes"),
+  paymentMethod: text("payment_method").notNull().default("efectivo"),
+  orderDetails: text("order_details").notNull().default(""),
   items: text("items").notNull(),
   total: decimal("total", { precision: 10, scale: 2 }).notNull(),
+  status: text("status").notNull().default("pendiente"),
+  orderTime: text("order_time"),
+  notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -34,9 +38,13 @@ export const insertOrderSchema = createInsertSchema(orders, {
   phone: z.string().min(10, "El teléfono debe tener al menos 10 dígitos"),
   orderType: z.enum(["delivery", "pickup", "dine-in"]),
   address: z.string().optional(),
+  paymentMethod: z.string().default("efectivo"),
+  orderDetails: z.string().min(1, "Los detalles del pedido son requeridos"),
   items: z.string().min(1, "Debes agregar al menos un producto"),
   total: z.string().regex(/^\d+(\.\d{1,2})?$/, "Total inválido"),
+  status: z.string().default("pendiente"),
   notes: z.string().optional(),
+  orderTime: z.string().optional(),
 }).omit({
   id: true,
   createdAt: true,

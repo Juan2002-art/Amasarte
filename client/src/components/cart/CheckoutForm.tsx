@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -17,8 +18,15 @@ export function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
     phone: '',
     address: '',
     type: 'delivery',
-    notes: ''
+    paymentMethod: 'efectivo',
+    orderTime: new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }),
   });
+
+  const getOrderDetailsText = () => {
+    return items
+      .map((item) => `${item.quantity}x ${item.name} - $${(item.price * item.quantity).toFixed(2)}`)
+      .join(' | ');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,9 +40,12 @@ export function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
       phone: formData.phone,
       orderType: formData.type,
       address: formData.type === 'delivery' ? formData.address : null,
-      notes: formData.notes || null,
+      paymentMethod: formData.paymentMethod,
+      orderDetails: getOrderDetailsText(),
       items: JSON.stringify(items),
-      total: finalTotal.toFixed(2)
+      total: finalTotal.toFixed(2),
+      status: 'pendiente',
+      orderTime: formData.orderTime || null,
     };
 
     try {
@@ -111,7 +122,7 @@ export function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
         </div>
 
         <div className="space-y-2">
-          <Label>Tipo de Pedido</Label>
+          <Label>Tipo de Entrega</Label>
           <RadioGroup 
             defaultValue="delivery" 
             value={formData.type}
@@ -148,13 +159,28 @@ export function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="notes">Notas Adicionales</Label>
-          <Textarea 
-            id="notes" 
-            placeholder="Sin cebolla, salsa extra, etc."
-            value={formData.notes}
-            onChange={e => setFormData({...formData, notes: e.target.value})}
-            data-testid="input-notes"
+          <Label htmlFor="payment">Forma de Pago</Label>
+          <Select value={formData.paymentMethod} onValueChange={(val) => setFormData({...formData, paymentMethod: val})}>
+            <SelectTrigger id="payment" data-testid="select-payment">
+              <SelectValue placeholder="Selecciona forma de pago" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="efectivo">Efectivo</SelectItem>
+              <SelectItem value="tarjeta">Tarjeta de Crédito</SelectItem>
+              <SelectItem value="transferencia">Transferencia Bancaria</SelectItem>
+              <SelectItem value="paypal">PayPal</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="orderTime">Hora del Pedido</Label>
+          <Input 
+            id="orderTime" 
+            type="time"
+            value={formData.orderTime}
+            onChange={e => setFormData({...formData, orderTime: e.target.value})}
+            data-testid="input-order-time"
           />
         </div>
       </div>

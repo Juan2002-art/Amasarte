@@ -57,29 +57,29 @@ export async function initializeSheetHeaders() {
   }
 
   const headers = [[
-    'ID',
+    'ID de Pedido',
     'Fecha',
+    'Hora',
     'Nombre Cliente',
     'Teléfono',
-    'Tipo de Pedido',
     'Dirección',
-    'Items',
+    'Tipo de Entrega',
+    'Forma de Pago',
+    'Detalles del Pedido',
     'Total',
-    'Notas'
+    'Estado del Pedido'
   ]];
 
   try {
-    // Check if headers already exist
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: 'Pedidos!A1:I1',
+      range: 'Pedidos!A1:K1',
     });
 
     if (!response.data.values || response.data.values.length === 0) {
-      // Headers don't exist, create them
       await sheets.spreadsheets.values.update({
         spreadsheetId: SPREADSHEET_ID,
-        range: 'Pedidos!A1:I1',
+        range: 'Pedidos!A1:K1',
         valueInputOption: 'RAW',
         requestBody: {
           values: headers
@@ -101,10 +101,13 @@ export async function appendOrderToSheet(orderData: {
   phone: string;
   orderType: string;
   address?: string | null;
+  paymentMethod: string;
+  orderDetails: string;
   items: string;
   total: string;
-  notes?: string | null;
+  status: string;
   createdAt: Date;
+  orderTime?: string | null;
 }) {
   const sheets = await getUncachableGoogleSheetClient();
   
@@ -115,22 +118,33 @@ export async function appendOrderToSheet(orderData: {
     return;
   }
 
+  const orderDate = orderData.createdAt.toLocaleDateString('es-MX');
+  const orderHour = orderData.orderTime || orderData.createdAt.toLocaleTimeString('es-MX');
+  
+  const deliveryTypeMap: Record<string, string> = {
+    delivery: 'Domicilio',
+    pickup: 'Recoger',
+    'dine-in': 'Comer Aquí'
+  };
+
   const values = [[
     orderData.id,
-    orderData.createdAt.toISOString(),
+    orderDate,
+    orderHour,
     orderData.customerName,
     orderData.phone,
-    orderData.orderType,
     orderData.address || '',
-    orderData.items,
+    deliveryTypeMap[orderData.orderType] || orderData.orderType,
+    orderData.paymentMethod,
+    orderData.orderDetails,
     orderData.total,
-    orderData.notes || ''
+    orderData.status
   ]];
 
   try {
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: 'Pedidos!A:I',
+      range: 'Pedidos!A:K',
       valueInputOption: 'RAW',
       requestBody: {
         values

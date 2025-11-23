@@ -19,10 +19,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           phone: order.phone,
           orderType: order.orderType,
           address: order.address,
+          paymentMethod: order.paymentMethod,
+          orderDetails: order.orderDetails,
           items: order.items,
           total: order.total,
-          notes: order.notes,
-          createdAt: order.createdAt
+          status: order.status,
+          createdAt: order.createdAt,
+          orderTime: order.orderTime
         });
       } catch (sheetsError) {
         console.error("Google Sheets sync failed, but order was saved:", sheetsError);
