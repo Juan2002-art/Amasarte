@@ -339,27 +339,24 @@ export function Menu() {
             {/* Size Selection */}
             <div>
               <Label className="text-base font-semibold mb-3 block">Tamaño de Pizza</Label>
-              <div className="space-y-3">
-                {(Object.entries(sizeLabels) as [keyof typeof sizeLabels, string][]).map(([size, label]) => {
-                  const sizePrice = Math.round(selectedItem?.price * sizeMultipliers[size]);
-                  return (
-                    <div key={size} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-blue-50 transition-colors cursor-pointer"
-                      onClick={() => setSelectedSize(size)}
-                    >
-                      <RadioGroupItem value={size} id={size} />
-                      <Label htmlFor={size} className="flex-1 cursor-pointer">
-                        <div className="font-semibold">{label}</div>
-                        <div className="text-sm text-muted-foreground">+ {formatPrice(sizePrice - (selectedItem?.price || 0))}</div>
-                      </Label>
-                      <span className="font-bold text-primary">{formatPrice(sizePrice)}</span>
-                    </div>
-                  );
-                })}
-              </div>
-              <RadioGroup value={selectedSize} onValueChange={(v: any) => setSelectedSize(v)} className="hidden">
-                {(Object.keys(sizeMultipliers) as (keyof typeof sizeMultipliers)[]).map(size => (
-                  <RadioGroupItem key={size} value={size} id={`radio-${size}`} />
-                ))}
+              <RadioGroup value={selectedSize} onValueChange={(v: any) => setSelectedSize(v)}>
+                <div className="space-y-3">
+                  {(Object.entries(sizeLabels) as [keyof typeof sizeLabels, string][]).map(([size, label]) => {
+                    const sizePrice = Math.round(selectedItem?.price * sizeMultipliers[size]);
+                    return (
+                      <div key={size} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-blue-50 transition-colors cursor-pointer"
+                        onClick={() => setSelectedSize(size)}
+                      >
+                        <RadioGroupItem value={size} id={size} />
+                        <Label htmlFor={size} className="flex-1 cursor-pointer">
+                          <div className="font-semibold">{label}</div>
+                          <div className="text-sm text-muted-foreground">+ {formatPrice(sizePrice - (selectedItem?.price || 0))}</div>
+                        </Label>
+                        <span className="font-bold text-primary">{formatPrice(sizePrice)}</span>
+                      </div>
+                    );
+                  })}
+                </div>
               </RadioGroup>
             </div>
 
