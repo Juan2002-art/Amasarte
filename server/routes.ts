@@ -1,6 +1,5 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
 import { insertOrderSchema } from "@shared/schema";
 import { fromError } from "zod-validation-error";
 import { appendOrderToSheet, initializeSheetHeaders } from "./googleSheets";
@@ -10,32 +9,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertOrderSchema.parse(req.body);
       
-      const order = await storage.createOrder(validatedData);
+      // Generate a unique order ID using timestamp + random number
+      const orderId = Math.floor(Date.now() / 1000) + Math.floor(Math.random() * 10000);
+      const now = new Date();
       
       try {
         await appendOrderToSheet({
-          id: order.id,
-          customerName: order.customerName,
-          phone: order.phone,
-          orderType: order.orderType,
-          address: order.address,
-          paymentMethod: order.paymentMethod,
-          orderDetails: order.orderDetails,
-          items: order.items,
-          total: order.total,
-          status: order.status,
-          createdAt: order.createdAt,
-          orderTime: order.orderTime
+          id: orderId,
+          customerName: validatedData.customerName,
+          phone: validatedData.phone,
+          orderType: validatedData.orderType,
+          address: validatedData.address || null,
+          paymentMethod: validatedData.paymentMethod,
+          orderDetails: validatedData.orderDetails,
+          items: validatedData.items,
+          total: validatedData.total,
+          status: validatedData.status,
+          createdAt: now,
+          orderTime: validatedData.orderTime || null
         });
-      } catch (sheetsError) {
-        console.error("Google Sheets sync failed, but order was saved:", sheetsError);
-      }
 
-      res.status(201).json({
-        success: true,
-        order,
-        message: "Pedido recibido correctamente"
-      });
+        // Return success response with the generated order ID
+        res.status(201).json({
+          success: true,
+          order: {
+            id: orderId,
+            customerName: validatedData.customerName,
+            phone: validatedData.phone,
+            orderType: validatedData.orderType,
+            address: validatedData.address || null,
+            paymentMethod: validatedData.paymentMethod,
+            orderDetails: validatedData.orderDetails,
+            items: validatedData.items,
+            total: validatedData.total,
+            status: validatedData.status,
+            orderTime: validatedData.orderTime || null,
+            createdAt: now
+          },
+          message: "Pedido recibido correctamente y sincronizado con Google Sheets"
+        });
+      } catch (sheetsError: any) {
+        console.error("Failed to sync order to Google Sheets:", sheetsError);
+        res.status(500).json({
+          success: false,
+          error: "Error al sincronizar el pedido con Google Sheets: " + sheetsError.message
+        });
+      }
     } catch (error: any) {
       if (error.name === "ZodError") {
         const validationError = fromError(error);
@@ -45,51 +64,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      console.error("Error creating order:", error);
+      console.error("Error processing order:", error);
       res.status(500).json({
         success: false,
         error: "Error al procesar el pedido"
-      });
-    }
-  });
-
-  app.get("/api/orders", async (req, res) => {
-    try {
-      const orders = await storage.getOrders();
-      res.json({ success: true, orders });
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-      res.status(500).json({
-        success: false,
-        error: "Error al obtener los pedidos"
-      });
-    }
-  });
-
-  app.get("/api/orders/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({
-          success: false,
-          error: "ID inválido"
-        });
-      }
-
-      const order = await storage.getOrder(id);
-      if (!order) {
-        return res.status(404).json({
-          success: false,
-          error: "Pedido no encontrado"
-        });
-      }
-
-      res.json({ success: true, order });
-    } catch (error) {
-      console.error("Error fetching order:", error);
-      res.status(500).json({
-        success: false,
-        error: "Error al obtener el pedido"
       });
     }
   });
