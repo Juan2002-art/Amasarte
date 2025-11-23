@@ -19,6 +19,9 @@ import capreseImage from '@assets/generated_images/caprese_pizza_with_fresh_ingr
 import ruguelaImage from '@assets/generated_images/arugula_and_parmesan_pizza.png';
 import bbqImage from '@assets/generated_images/bbq_smoked_meat_pizza.png';
 import camaronesImage from '@assets/generated_images/garlic_shrimp_pizza.png';
+import limonadaImage from '@assets/generated_images/fresh_homemade_lemonade.png';
+import cervezaIPAImage from '@assets/generated_images/craft_ipa_beer_glass.png';
+import vinoTintoImage from '@assets/generated_images/red_malbec_wine_glass.png';
 import aguaImage from '@assets/generated_images/sparkling_mineral_water.png';
 import refrescoImage from '@assets/generated_images/fresh_tropical_fruit_juice.png';
 import vino_blancoImage from '@assets/generated_images/white_sauvignon_blanc_wine.png';
@@ -54,9 +57,9 @@ const menuItems = {
     { id: 15, name: 'Camarones al Ajillo', desc: 'Base blanca, camarones al ajillo, limón, ajo tostado, perejil.', price: 45000, tags: ['chef-choice'], image: camaronesImage },
   ],
   bebidas: [
-    { id: 8, name: 'Limonada Casera', desc: 'Limones frescos, menta y un toque de jengibre.', price: 13000, tags: [], image: null },
-    { id: 9, name: 'Cerveza Artesanal IPA', desc: 'Cervecería local, notas cítricas.', price: 14000, tags: [], image: null },
-    { id: 10, name: 'Vino Tinto Malbec', desc: 'Copa de la casa.', price: 15000, tags: [], image: null },
+    { id: 8, name: 'Limonada Casera', desc: 'Limones frescos, menta y un toque de jengibre.', price: 13000, tags: [], image: limonadaImage },
+    { id: 9, name: 'Cerveza Artesanal IPA', desc: 'Cervecería local, notas cítricas.', price: 14000, tags: [], image: cervezaIPAImage },
+    { id: 10, name: 'Vino Tinto Malbec', desc: 'Copa de la casa.', price: 15000, tags: [], image: vinoTintoImage },
     { id: 16, name: 'Agua Mineral con Gas', desc: 'Refrescante y pura, con burbujas naturales.', price: 8000, tags: [], image: aguaImage },
     { id: 17, name: 'Refresco Natural', desc: 'Jugo fresco de frutas tropicales del día.', price: 10000, tags: [], image: refrescoImage },
     { id: 18, name: 'Vino Blanco Sauvignon Blanc', desc: 'Copa de blanco, fresco y afrutado.', price: 13000, tags: [], image: vino_blancoImage },
