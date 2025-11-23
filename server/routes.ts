@@ -78,26 +78,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const fecha = now.toLocaleDateString("es-MX");
       const hora = now.toLocaleTimeString("es-MX");
       
-      // Append the data to the Google Sheet
-      await sheetsClient.spreadsheets.values.append({
+      const rowData = [
+        orderId,
+        fecha,
+        hora,
+        validatedData.nombre,
+        validatedData.telefono,
+        validatedData.direccion,
+        validatedData.tipoEntrega,
+        validatedData.formaPago,
+        validatedData.items,
+        validatedData.detallesAdicionales || "",
+        validatedData.total,
+      ];
+
+      // Use batchUpdate to append cells to avoid range parsing issues
+      await sheetsClient.spreadsheets.batchUpdate({
         spreadsheetId,
-        range: "Sheet1!A:I",
-        valueInputOption: "USER_ENTERED",
         requestBody: {
-          values: [
-            [
-              orderId,
-              fecha,
-              hora,
-              validatedData.nombre,
-              validatedData.telefono,
-              validatedData.direccion,
-              validatedData.tipoEntrega,
-              validatedData.formaPago,
-              validatedData.items,
-              validatedData.detallesAdicionales || "",
-              validatedData.total,
-            ],
+          requests: [
+            {
+              appendCells: {
+                sheetId: 0,
+                rows: [
+                  {
+                    values: rowData.map((value) => ({
+                      userEnteredValue: {
+                        stringValue: String(value),
+                      },
+                    })),
+                  },
+                ],
+                fields: "userEnteredValue",
+              },
+            },
           ],
         },
       });
