@@ -289,10 +289,10 @@ export function Menu() {
             {/* Mitad de Cada Pizza Selection */}
             {isMitadDeCadaPizza && (
               <div className="p-4 rounded-lg space-y-4" style={{ backgroundColor: '#2A5A5B' }}>
-                <p className="text-sm font-medium" style={{ color: '#F5E8D0' }}>Selecciona mitad de 2 pizzas diferentes:</p>
+                <p className="text-sm font-medium" style={{ color: '#FFFFFF' }}>🔴 SELECCIONA 2 PIZZAS DIFERENTES:</p>
                 
                 <div>
-                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#FFFFFF' }}>Primera Pizza (Mitad)</Label>
+                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#FFFF00' }}>Primera Pizza (Mitad)</Label>
                   <select 
                     value={mitadCadaPizza1?.id || ''} 
                     onChange={(e) => {
@@ -310,7 +310,7 @@ export function Menu() {
                 </div>
 
                 <div>
-                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#FFFFFF' }}>Segunda Pizza (Mitad)</Label>
+                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#FFFF00' }}>Segunda Pizza (Mitad)</Label>
                   <select 
                     value={mitadCadaPizza2?.id || ''} 
                     onChange={(e) => {

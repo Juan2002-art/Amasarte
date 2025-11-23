@@ -525,7 +525,7 @@ export function Promotions() {
             {promo2Type === 'completa' && (
               <>
                 <div>
-                  <Label className="font-semibold mb-2 block" style={{ color: '#FFFFFF' }}>Selecciona tu Pizza</Label>
+                  <Label className="font-semibold mb-2 block" style={{ color: '#FFFF00' }}>Selecciona tu Pizza</Label>
                   <select 
                     value={promo2Pizza?.id || ''} 
                     onChange={(e) => {
@@ -554,7 +554,7 @@ export function Promotions() {
             {promo2Type === 'mitadCadaPizza' && (
               <>
                 <div>
-                  <Label className="font-semibold mb-2 block" style={{ color: '#FFFFFF' }}>Primera Pizza (Mitad)</Label>
+                  <Label className="font-semibold mb-2 block" style={{ color: '#FFFF00' }}>Primera Pizza (Mitad)</Label>
                   <select 
                     value={promo2MitadPizza1?.id || ''} 
                     onChange={(e) => {
@@ -571,7 +571,7 @@ export function Promotions() {
                 </div>
 
                 <div>
-                  <Label className="font-semibold mb-2 block" style={{ color: '#FFFFFF' }}>Segunda Pizza (Mitad)</Label>
+                  <Label className="font-semibold mb-2 block" style={{ color: '#FFFF00' }}>Segunda Pizza (Mitad)</Label>
                   <select 
                     value={promo2MitadPizza2?.id || ''} 
                     onChange={(e) => {
