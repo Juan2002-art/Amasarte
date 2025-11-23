@@ -2,7 +2,6 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Hero } from '@/components/sections/Hero';
 import { Promotions } from '@/components/sections/Promotions';
 import { Menu } from '@/components/sections/Menu';
-import { Testimonials } from '@/components/sections/Testimonials';
 import { Contact } from '@/components/sections/Contact';
 import { Checkout } from '@/components/sections/Checkout';
 import { Footer } from '@/components/layout/Footer';
@@ -22,7 +21,6 @@ function HomeContent() {
         <Hero />
         <Promotions />
         <Menu />
-        <Testimonials />
         <Checkout />
         <Contact />
       </main>
