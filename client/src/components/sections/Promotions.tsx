@@ -263,15 +263,15 @@ export function Promotions() {
 
   return (
     <>
-      <section id="promotions" className="py-24 bg-gradient-to-br from-orange-50 to-yellow-50">
+      <section id="promotions" className="py-24" style={{ backgroundColor: '#1A3A3B' }}>
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <Gift className="text-orange-500" size={32} />
-              <h2 className="text-4xl md:text-5xl font-bold text-foreground">Promociones Semanales</h2>
-              <Flame className="text-red-500" size={32} />
+              <Gift style={{ color: '#F5E8D0' }} size={32} />
+              <h2 className="text-4xl md:text-5xl font-bold" style={{ color: '#F5E8D0' }}>Promociones Semanales</h2>
+              <Flame style={{ color: '#F5E8D0' }} size={32} />
             </div>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-lg" style={{ color: '#F5E8D0' }}>
               Ofertas especiales que no puedes perder. ¡Aprovecha esta semana!
             </p>
           </div>
@@ -288,13 +288,14 @@ export function Promotions() {
                 <Card
                   className={`overflow-hidden border-2 transition-all duration-300 h-full flex flex-col ${
                     promo.highlight
-                      ? 'border-orange-400 shadow-xl hover:shadow-2xl bg-white'
-                      : 'border-gray-200 hover:border-orange-300 hover:shadow-lg'
+                      ? 'border-orange-400 shadow-xl hover:shadow-2xl'
+                      : 'border-gray-600 hover:border-orange-400 hover:shadow-lg'
                   }`}
+                  style={{ backgroundColor: '#1A3A3B', color: '#F5E8D0' }}
                 >
                   {promo.highlight && (
-                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 px-4">
-                      <p className="text-sm font-bold text-center flex items-center justify-center gap-1">
+                    <div className="bg-gradient-to-r from-orange-500 to-red-500 py-2 px-4">
+                      <p className="text-sm font-bold text-center flex items-center justify-center gap-1" style={{ color: '#F5E8D0' }}>
                         <Star size={14} />
                         {promo.badge}
                         <Star size={14} />
@@ -304,33 +305,33 @@ export function Promotions() {
 
                   <CardHeader className={promo.highlight ? 'pt-4 pb-2' : ''}>
                     {!promo.highlight && (
-                      <Badge className="w-fit mb-2 bg-blue-500 hover:bg-blue-600">
+                      <Badge className="w-fit mb-2 bg-orange-500 hover:bg-orange-600">
                         {promo.badge}
                       </Badge>
                     )}
-                    <CardTitle className="text-2xl">{promo.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground mt-2">{promo.description}</p>
+                    <CardTitle className="text-2xl" style={{ color: '#F5E8D0' }}>{promo.title}</CardTitle>
+                    <p className="text-sm mt-2" style={{ color: '#F5E8D0' }}>{promo.description}</p>
                   </CardHeader>
 
                   <CardContent className="flex-1">
                     {promo.originalPrice && (
                       <div className="space-y-2 mb-4">
                         <div className="flex items-baseline gap-2">
-                          <span className="text-3xl font-bold text-primary">{formatPrice(promo.promoPrice)}</span>
-                          <span className="text-xl line-through text-gray-400">{formatPrice(promo.originalPrice)}</span>
+                          <span className="text-3xl font-bold text-orange-400">{formatPrice(promo.promoPrice)}</span>
+                          <span className="text-xl line-through" style={{ color: '#F5E8D0' }}>{formatPrice(promo.originalPrice)}</span>
                         </div>
-                        <div className="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-bold">
+                        <div className="inline-block bg-orange-600 text-orange-100 px-3 py-1 rounded-full text-sm font-bold">
                           Ahorra {formatPrice(promo.originalPrice - promo.promoPrice)}
                         </div>
                       </div>
                     )}
                     {!promo.originalPrice && (
-                      <div className="bg-blue-50 border-l-4 border-blue-500 p-3 rounded mb-4">
-                        <p className="text-lg font-bold text-blue-700">{promo.discount}</p>
-                        <p className="text-sm text-blue-600 mt-1">{formatPrice(promo.promoPrice)}</p>
+                      <div className="border-l-4 border-orange-400 p-3 rounded mb-4" style={{ backgroundColor: '#2A5A5B' }}>
+                        <p className="text-lg font-bold text-orange-300">{promo.discount}</p>
+                        <p className="text-sm mt-1" style={{ color: '#F5E8D0' }}>{formatPrice(promo.promoPrice)}</p>
                       </div>
                     )}
-                    <p className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
+                    <p className="text-xs p-2 rounded" style={{ backgroundColor: '#2A5A5B', color: '#F5E8D0' }}>
                       <strong>Detalles:</strong> {promo.details}
                     </p>
                   </CardContent>
