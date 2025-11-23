@@ -45,7 +45,7 @@ export function Navbar() {
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="font-display font-bold text-2xl md:text-3xl tracking-tighter text-primary cursor-pointer flex items-center gap-2 hover:opacity-80 transition-opacity"
         >
-          ama<span style={{ fontWeight: 'bold', fontSize: '0.9em', color: isScrolled ? '#1A3A3B' : '#FF8533' }}>SS</span>arte
+          ama<span style={{ fontWeight: 'bold', fontSize: '0.9em', color: isScrolled ? '#1A3A3B' : '#F5E8D0' }}>SS</span>arte
         </button>
 
         {/* Desktop Nav */}
