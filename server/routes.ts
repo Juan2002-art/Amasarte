@@ -81,7 +81,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Append the data to the Google Sheet
       await sheetsClient.spreadsheets.values.append({
         spreadsheetId,
-        range: "Sheet1!A:I",
+        range: "Sheet1!A1",
         valueInputOption: "USER_ENTERED",
         requestBody: {
           values: [
