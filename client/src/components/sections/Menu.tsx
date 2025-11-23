@@ -5,21 +5,27 @@ import { Button } from '@/components/ui/button';
 import { Plus, Leaf, Flame, Star, Info } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import pizzaImage from '@assets/generated_images/margherita_pizza_menu_item.png';
+import margheritaImage from '@assets/generated_images/margherita_pizza_with_fresh_basil.png';
+import pepperoniImage from '@assets/generated_images/crispy_pepperoni_pizza_slice.png';
+import quatroQuesosImage from '@assets/generated_images/four_cheese_pizza_with_honey.png';
+import hawaianaImage from '@assets/generated_images/hawaiian_pizza_with_pineapple.png';
+import trufaImage from '@assets/generated_images/truffle_mushroom_gourmet_pizza.png';
+import burratImage from '@assets/generated_images/burrata_prosciutto_fresh_pizza.png';
+import diabolaImage from '@assets/generated_images/spicy_diavola_hot_pizza.png';
 import { useCart } from '@/context/CartContext';
 
 // Mock Data
 const menuItems = {
   clasicas: [
-    { id: 1, name: 'Margherita', desc: 'Salsa de tomate San Marzano, mozzarella fior di latte, albahaca fresca, aceite de oliva virgen extra.', price: 12.99, tags: ['veg'], image: pizzaImage },
-    { id: 2, name: 'Pepperoni', desc: 'Salsa de tomate, mozzarella, doble porción de pepperoni crujiente.', price: 14.50, tags: ['popular'], image: pizzaImage },
-    { id: 3, name: 'Cuatro Quesos', desc: 'Mozzarella, gorgonzola, parmesano reggiano, provolone, miel picante.', price: 15.50, tags: ['veg'], image: pizzaImage },
-    { id: 4, name: 'Hawaiana Artesanal', desc: 'Piña asada, jamón serrano, mozzarella, salsa de tomate.', price: 14.99, tags: [], image: pizzaImage },
+    { id: 1, name: 'Margherita', desc: 'Salsa de tomate San Marzano, mozzarella fior di latte, albahaca fresca, aceite de oliva virgen extra.', price: 12.99, tags: ['veg'], image: margheritaImage },
+    { id: 2, name: 'Pepperoni', desc: 'Salsa de tomate, mozzarella, doble porción de pepperoni crujiente.', price: 14.50, tags: ['popular'], image: pepperoniImage },
+    { id: 3, name: 'Cuatro Quesos', desc: 'Mozzarella, gorgonzola, parmesano reggiano, provolone, miel picante.', price: 15.50, tags: ['veg'], image: quatroQuesosImage },
+    { id: 4, name: 'Hawaiana Artesanal', desc: 'Piña asada, jamón serrano, mozzarella, salsa de tomate.', price: 14.99, tags: [], image: hawaianaImage },
   ],
   especiales: [
-    { id: 5, name: 'Trufa y Hongos', desc: 'Crema de trufa, mix de hongos silvestres, mozzarella, aceite de trufa blanca.', price: 18.99, tags: ['gourmet', 'veg'], image: pizzaImage },
-    { id: 6, name: 'Burrata y Prosciutto', desc: 'Base blanca, prosciutto di Parma, burrata fresca entera, rúcula, tomates cherry.', price: 19.50, tags: ['chef-choice'], image: pizzaImage },
-    { id: 7, name: 'Diavola Picante', desc: "Salami picante, 'nduja calabresa, chiles frescos, miel.", price: 16.50, tags: ['spicy'], image: pizzaImage },
+    { id: 5, name: 'Trufa y Hongos', desc: 'Crema de trufa, mix de hongos silvestres, mozzarella, aceite de trufa blanca.', price: 18.99, tags: ['gourmet', 'veg'], image: trufaImage },
+    { id: 6, name: 'Burrata y Prosciutto', desc: 'Base blanca, prosciutto di Parma, burrata fresca entera, rúcula, tomates cherry.', price: 19.50, tags: ['chef-choice'], image: burratImage },
+    { id: 7, name: 'Diavola Picante', desc: "Salami picante, 'nduja calabresa, chiles frescos, miel.", price: 16.50, tags: ['spicy'], image: diabolaImage },
   ],
   bebidas: [
     { id: 8, name: 'Limonada Casera', desc: 'Limones frescos, menta y un toque de jengibre.', price: 4.50, tags: [], image: null },
@@ -73,13 +79,14 @@ export function Menu() {
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
                 {menuItems[cat.id as keyof typeof menuItems].map((item) => (
-                  <Card key={item.id} className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 bg-white h-full flex flex-col">
+                  <Card key={item.id} className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 bg-white h-full flex flex-col" data-testid={`card-pizza-${item.id}`}>
                     {item.image && (
                       <div className="relative h-56 overflow-hidden">
                         <img
                           src={item.image}
                           alt={item.name}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          data-testid={`img-pizza-${item.id}`}
                         />
                         <div className="absolute top-3 right-3 flex flex-col gap-2">
                           {item.tags.includes('veg') && (
@@ -96,10 +103,10 @@ export function Menu() {
                     )}
                     <CardHeader className={item.image ? 'pt-6' : ''}>
                       <div className="flex justify-between items-start mb-2">
-                        <CardTitle className="text-xl font-bold">{item.name}</CardTitle>
-                        <span className="text-lg font-bold text-primary">${item.price}</span>
+                        <CardTitle className="text-xl font-bold" data-testid={`text-pizza-name-${item.id}`}>{item.name}</CardTitle>
+                        <span className="text-lg font-bold text-primary" data-testid={`text-pizza-price-${item.id}`}>${item.price}</span>
                       </div>
-                      <CardDescription className="text-base line-clamp-2">{item.desc}</CardDescription>
+                      <CardDescription className="text-base line-clamp-2" data-testid={`text-pizza-desc-${item.id}`}>{item.desc}</CardDescription>
                     </CardHeader>
                     <CardFooter className="mt-auto pt-4">
                       <Button 
@@ -110,6 +117,7 @@ export function Menu() {
                           price: item.price,
                           image: item.image || undefined
                         })}
+                        data-testid={`button-add-pizza-${item.id}`}
                       >
                         <Plus size={18} className="mr-2" /> Agregar al Pedido
                       </Button>
@@ -122,7 +130,7 @@ export function Menu() {
         </Tabs>
 
         <div className="mt-16 text-center">
-          <Button variant="outline" size="lg" className="rounded-full border-primary text-primary hover:bg-primary hover:text-white">
+          <Button variant="outline" size="lg" className="rounded-full border-primary text-primary hover:bg-primary hover:text-white" data-testid="button-download-pdf">
             Descargar Menú PDF
           </Button>
         </div>
