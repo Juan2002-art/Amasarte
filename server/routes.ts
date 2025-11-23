@@ -78,49 +78,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const fecha = now.toLocaleDateString("es-MX");
       const hora = now.toLocaleTimeString("es-MX");
       
-      const rowData = [
-        orderId,
-        fecha,
-        hora,
-        validatedData.nombre,
-        validatedData.telefono,
-        validatedData.direccion,
-        validatedData.tipoEntrega,
-        validatedData.formaPago,
-        validatedData.items,
-        validatedData.detallesAdicionales || "",
-        validatedData.total,
-      ];
-
-      // Get current data to find the last row
-      const getResp = await sheetsClient.spreadsheets.values.get({
+      // Append the data to the Google Sheet using '1930017163' (gid from your URL)
+      await sheetsClient.spreadsheets.values.append({
         spreadsheetId,
-        range: "Sheet1",
-      });
-
-      const existingData = getResp.data.values || [];
-      const nextRow = existingData.length + 1;
-
-      // Use batchUpdate to append the row
-      await sheetsClient.spreadsheets.batchUpdate({
-        spreadsheetId,
+        range: "'1930017163'!A:K",
+        valueInputOption: "USER_ENTERED",
         requestBody: {
-          requests: [
-            {
-              appendCells: {
-                sheetId: 0,
-                rows: [
-                  {
-                    values: rowData.map((val) => ({
-                      userEnteredValue: {
-                        stringValue: String(val),
-                      },
-                    })),
-                  },
-                ],
-                fields: "userEnteredValue",
-              },
-            },
+          values: [
+            [
+              orderId,
+              fecha,
+              hora,
+              validatedData.nombre,
+              validatedData.telefono,
+              validatedData.direccion,
+              validatedData.tipoEntrega,
+              validatedData.formaPago,
+              validatedData.items,
+              validatedData.detallesAdicionales || "",
+              validatedData.total,
+            ],
           ],
         },
       });
