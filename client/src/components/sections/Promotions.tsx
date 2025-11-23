@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useCart } from '@/context/CartContext';
+import { useCart, PizzaOptions } from '@/context/CartContext';
 import { toast } from 'sonner';
-import { Gift, Flame, Star } from 'lucide-react';
+import { Gift, Flame, Star, Check } from 'lucide-react';
 
 const formatPrice = (price: number): string => {
   return new Intl.NumberFormat('es-CO', {
@@ -19,6 +19,7 @@ const formatPrice = (price: number): string => {
 const promotions: any[] = [
   {
     id: 'promo-1',
+    itemId: 201,
     title: '2x1 en Pizzas Personales',
     description: 'Compra una pizza personal y lleva dos. Válido en pizzas clásicas.',
     discount: '50%',
@@ -30,6 +31,7 @@ const promotions: any[] = [
   },
   {
     id: 'promo-2',
+    itemId: 202,
     title: 'Pizza Grande -50%',
     description: 'Lleva una pizza grande con el 50% de descuento.',
     discount: '50%',
@@ -41,12 +43,14 @@ const promotions: any[] = [
   },
   {
     id: 'promo-3',
+    itemId: 203,
     title: '3 Porciones + Bebida',
     description: 'Lleva 3 porciones individuales + 1 bebida gratis.',
     discount: 'BEBIDA GRATIS',
     badge: 'COMBO',
     highlight: false,
     details: 'Válido de lunes a viernes',
+    promoPrice: 21000,
   },
 ];
 
@@ -55,8 +59,23 @@ export function Promotions() {
   const [addedPromos, setAddedPromos] = useState<Set<string>>(new Set());
 
   const handlePromoClick = (promo: any) => {
-    toast.info(`${promo.title} agregada a tu carrito. Completa los detalles en el pedido.`);
+    const promoOptions: PizzaOptions = {
+      esPromocion: true,
+      porcentajeDescuento: promo.originalPrice ? Math.round(((promo.originalPrice - promo.promoPrice) / promo.originalPrice) * 100) : 0,
+    };
+
+    addItem(
+      {
+        id: promo.itemId,
+        name: promo.title,
+        price: promo.promoPrice || 0,
+      },
+      promoOptions
+    );
+
     setAddedPromos(new Set([...addedPromos, promo.id]));
+    toast.success(`✓ ${promo.title} agregada al carrito!`);
+    
     setTimeout(() => {
       setAddedPromos(prev => {
         const newSet = new Set(prev);
@@ -131,6 +150,7 @@ export function Promotions() {
                   {!promo.originalPrice && (
                     <div className="bg-blue-50 border-l-4 border-blue-500 p-3 rounded mb-4">
                       <p className="text-lg font-bold text-blue-700">{promo.discount}</p>
+                      <p className="text-sm text-blue-600 mt-1">{formatPrice(promo.promoPrice)}</p>
                     </div>
                   )}
                   <p className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
@@ -148,7 +168,14 @@ export function Promotions() {
                     } text-white`}
                     data-testid={`button-promo-${promo.id}`}
                   >
-                    {addedPromos.has(promo.id) ? '✓ Agregada' : 'Aprovechar Oferta'}
+                    {addedPromos.has(promo.id) ? (
+                      <>
+                        <Check size={18} className="mr-2" />
+                        Agregada
+                      </>
+                    ) : (
+                      'Aprovechar Oferta'
+                    )}
                   </Button>
                 </CardFooter>
               </Card>
@@ -164,7 +191,7 @@ export function Promotions() {
           className="mt-12 bg-white rounded-lg p-6 border-l-4 border-orange-500"
         >
           <p className="text-center text-muted-foreground">
-            <span className="font-semibold text-foreground">¡Válido esta semana!</span> Las promociones se aplican automáticamente al realizar tu pedido. Consulta con nuestro equipo para más detalles.
+            <span className="font-semibold text-foreground">¡Válido esta semana!</span> Las promociones se agreguen directamente a tu carrito. Completa los detalles en la sección de pedido.
           </p>
         </motion.div>
       </div>
