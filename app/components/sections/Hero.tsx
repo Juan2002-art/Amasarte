@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ChevronDown } from 'lucide-react';
-import heroImage from '@assets/generated_images/artisanal_pizza_hero_image.png';
+import heroImage from '/generated_images/artisanal_pizza_hero_image.png';
 import { useCart } from '@/context/CartContext';
 
 export function Hero() {

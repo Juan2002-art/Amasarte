@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { X } from 'lucide-react';
-import ovenImage from '@assets/generated_images/wood_fired_oven.png';
-import ingredientsImage from '@assets/generated_images/pizza_ingredients.png';
-import pizzaHero from '@assets/generated_images/artisanal_pizza_hero_image.png';
+import ovenImage from '/generated_images/wood_fired_oven.png';
+import ingredientsImage from '/generated_images/pizza_ingredients.png';
+import pizzaHero from '/generated_images/artisanal_pizza_hero_image.png';
 
 const images = [
   { id: 1, src: ovenImage, alt: 'Horno de Leña', span: 'md:col-span-2 md:row-span-2' },

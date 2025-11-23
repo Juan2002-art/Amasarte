@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
-import chefImage from '@assets/generated_images/pizza_chef_portrait.png';
+import chefImage from '/generated_images/pizza_chef_portrait.png';
 
 export function About() {
   return (

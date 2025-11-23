@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Plus, Leaf, Flame, Star, Info } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import margheritaImage from '@assets/generated_images/margherita_pizza_with_fresh_basil.png';
-import pepperoniImage from '@assets/generated_images/crispy_pepperoni_pizza_slice.png';
-import quatroQuesosImage from '@assets/generated_images/four_cheese_pizza_with_honey.png';
-import hawaianaImage from '@assets/generated_images/hawaiian_pizza_with_pineapple.png';
-import trufaImage from '@assets/generated_images/truffle_mushroom_gourmet_pizza.png';
-import burratImage from '@assets/generated_images/burrata_prosciutto_fresh_pizza.png';
-import diabolaImage from '@assets/generated_images/spicy_diavola_hot_pizza.png';
+import margheritaImage from '/generated_images/margherita_pizza_with_fresh_basil.png';
+import pepperoniImage from '/generated_images/crispy_pepperoni_pizza_slice.png';
+import quatroQuesosImage from '/generated_images/four_cheese_pizza_with_honey.png';
+import hawaianaImage from '/generated_images/hawaiian_pizza_with_pineapple.png';
+import trufaImage from '/generated_images/truffle_mushroom_gourmet_pizza.png';
+import burratImage from '/generated_images/burrata_prosciutto_fresh_pizza.png';
+import diabolaImage from '/generated_images/spicy_diavola_hot_pizza.png';
 import { useCart } from '@/context/CartContext';
 
 // Mock Data
