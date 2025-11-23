@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { useCart, PizzaOptions } from '@/context/CartContext';
 import { toast } from 'sonner';
 import { Gift, Flame, Star, Check } from 'lucide-react';
@@ -16,6 +18,46 @@ const formatPrice = (price: number): string => {
   }).format(price);
 };
 
+// Menu items data
+const pizzasClasicas = [
+  { id: 1, name: 'Margherita', price: 32000 },
+  { id: 2, name: 'Pepperoni', price: 35000 },
+  { id: 3, name: 'Cuatro Quesos', price: 38000 },
+  { id: 4, name: 'Hawaiana Artesanal', price: 35000 },
+  { id: 11, name: 'Carbonara', price: 36000 },
+  { id: 12, name: 'Caprese', price: 34000 },
+];
+
+const allPizzas = [
+  ...pizzasClasicas,
+  { id: 5, name: 'Trufa y Hongos', price: 42000 },
+  { id: 6, name: 'Burrata y Prosciutto', price: 44000 },
+  { id: 7, name: 'Diavola Picante', price: 40000 },
+  { id: 13, name: 'Rúcula y Parmesano', price: 41000 },
+  { id: 14, name: 'BBQ Ahumada', price: 43000 },
+  { id: 15, name: 'Camarones al Ajillo', price: 45000 },
+];
+
+const porciones = [
+  { id: 101, name: 'Porción Margherita', price: 8000 },
+  { id: 102, name: 'Porción Pepperoni', price: 9000 },
+  { id: 103, name: 'Porción Cuatro Quesos', price: 10000 },
+  { id: 104, name: 'Porción Hawaiana', price: 9000 },
+  { id: 105, name: 'Porción BBQ', price: 11000 },
+  { id: 106, name: 'Porción Diavola', price: 10500 },
+];
+
+const bebidas = [
+  { id: 8, name: 'Limonada Casera', price: 13000 },
+  { id: 9, name: 'Cerveza Artesanal IPA', price: 14000 },
+  { id: 10, name: 'Vino Tinto Malbec', price: 15000 },
+  { id: 16, name: 'Agua Mineral con Gas', price: 8000 },
+  { id: 17, name: 'Refresco Natural', price: 10000 },
+  { id: 18, name: 'Vino Blanco Sauvignon Blanc', price: 13000 },
+  { id: 19, name: 'Cerveza Lager Premium', price: 12000 },
+  { id: 20, name: 'Gaseosa Premium', price: 9000 },
+];
+
 const promotions: any[] = [
   {
     id: 'promo-1',
@@ -27,7 +69,7 @@ const promotions: any[] = [
     promoPrice: 16000,
     badge: 'HOT DEAL',
     highlight: true,
-    details: 'Aplica en: Margherita, Pepperoni, Cuatro Quesos, Hawaiana, Carbonara, Caprese',
+    details: 'Selecciona 2 pizzas clásicas tamaño personal',
   },
   {
     id: 'promo-2',
@@ -39,17 +81,17 @@ const promotions: any[] = [
     promoPrice: 26000,
     badge: 'MEGA DESCUENTO',
     highlight: true,
-    details: 'Aplica en: Cualquier pizza, personalización incluida',
+    details: 'Selecciona cualquier pizza en tamaño grande',
   },
   {
     id: 'promo-3',
     itemId: 203,
-    title: '3 Porciones + Bebida',
+    title: '3 Porciones + Bebida Gratis',
     description: 'Lleva 3 porciones individuales + 1 bebida gratis.',
     discount: 'BEBIDA GRATIS',
     badge: 'COMBO',
     highlight: false,
-    details: 'Válido de lunes a viernes',
+    details: 'Selecciona 3 porciones y 1 bebida (gratis)',
     promoPrice: 21000,
   },
 ];
@@ -57,144 +99,439 @@ const promotions: any[] = [
 export function Promotions() {
   const { addItem } = useCart();
   const [addedPromos, setAddedPromos] = useState<Set<string>>(new Set());
+  
+  // Promo-1 state
+  const [promo1DialogOpen, setPromo1DialogOpen] = useState(false);
+  const [promo1Pizza1, setPromo1Pizza1] = useState<any>(null);
+  const [promo1Pizza2, setPromo1Pizza2] = useState<any>(null);
 
-  const handlePromoClick = (promo: any) => {
-    const promoOptions: PizzaOptions = {
-      esPromocion: true,
-      porcentajeDescuento: promo.originalPrice ? Math.round(((promo.originalPrice - promo.promoPrice) / promo.originalPrice) * 100) : 0,
-    };
+  // Promo-2 state
+  const [promo2DialogOpen, setPromo2DialogOpen] = useState(false);
+  const [promo2Pizza, setPromo2Pizza] = useState<any>(null);
 
+  // Promo-3 state
+  const [promo3DialogOpen, setPromo3DialogOpen] = useState(false);
+  const [promo3Porciones, setPromo3Porciones] = useState<any[]>([]);
+  const [promo3Bebida, setPromo3Bebida] = useState<any>(null);
+
+  // Handlers for Promo-1
+  const handlePromo1Click = () => {
+    setPromo1Pizza1(null);
+    setPromo1Pizza2(null);
+    setPromo1DialogOpen(true);
+  };
+
+  const handlePromo1Confirm = () => {
+    if (!promo1Pizza1 || !promo1Pizza2) {
+      toast.error('Por favor selecciona 2 pizzas');
+      return;
+    }
+
+    const itemName = `2x1 ${promo1Pizza1.name} + ${promo1Pizza2.name} (Personal)`;
     addItem(
       {
-        id: promo.itemId,
-        name: promo.title,
-        price: promo.promoPrice || 0,
+        id: 201,
+        name: itemName,
+        price: 16000,
       },
-      promoOptions
+      {
+        esPromocion: true,
+        porcentajeDescuento: 50,
+      }
     );
 
-    setAddedPromos(new Set([...addedPromos, promo.id]));
-    toast.success(`✓ ${promo.title} agregada al carrito!`);
+    setAddedPromos(new Set([...addedPromos, 'promo-1']));
+    toast.success(`✓ ${itemName} agregada!`);
+    setPromo1DialogOpen(false);
     
     setTimeout(() => {
       setAddedPromos(prev => {
         const newSet = new Set(prev);
-        newSet.delete(promo.id);
+        newSet.delete('promo-1');
+        return newSet;
+      });
+    }, 2000);
+  };
+
+  // Handlers for Promo-2
+  const handlePromo2Click = () => {
+    setPromo2Pizza(null);
+    setPromo2DialogOpen(true);
+  };
+
+  const handlePromo2Confirm = () => {
+    if (!promo2Pizza) {
+      toast.error('Por favor selecciona una pizza');
+      return;
+    }
+
+    const grandePrice = Math.round(promo2Pizza.price * 1.7);
+    const promoPrice = Math.round(grandePrice * 0.5);
+    const itemName = `${promo2Pizza.name} Grande -50%`;
+
+    addItem(
+      {
+        id: 202,
+        name: itemName,
+        price: promoPrice,
+      },
+      {
+        esPromocion: true,
+        porcentajeDescuento: 50,
+        tamaño: 'grande',
+      }
+    );
+
+    setAddedPromos(new Set([...addedPromos, 'promo-2']));
+    toast.success(`✓ ${itemName} agregada!`);
+    setPromo2DialogOpen(false);
+
+    setTimeout(() => {
+      setAddedPromos(prev => {
+        const newSet = new Set(prev);
+        newSet.delete('promo-2');
+        return newSet;
+      });
+    }, 2000);
+  };
+
+  // Handlers for Promo-3
+  const handlePromo3Click = () => {
+    setPromo3Porciones([]);
+    setPromo3Bebida(null);
+    setPromo3DialogOpen(true);
+  };
+
+  const handlePromo3AddPorcion = (porcion: any) => {
+    if (promo3Porciones.length < 3) {
+      setPromo3Porciones([...promo3Porciones, porcion]);
+    }
+  };
+
+  const handlePromo3RemovePorcion = (index: number) => {
+    setPromo3Porciones(promo3Porciones.filter((_, i) => i !== index));
+  };
+
+  const handlePromo3Confirm = () => {
+    if (promo3Porciones.length !== 3 || !promo3Bebida) {
+      toast.error('Por favor selecciona 3 porciones y 1 bebida');
+      return;
+    }
+
+    const porcionesNames = promo3Porciones.map(p => p.name).join(', ');
+    const itemName = `3 Porciones + ${promo3Bebida.name} (Gratis)`;
+
+    addItem(
+      {
+        id: 203,
+        name: itemName,
+        price: 21000,
+      },
+      {
+        esPromocion: true,
+        porcentajeDescuento: 15,
+      }
+    );
+
+    setAddedPromos(new Set([...addedPromos, 'promo-3']));
+    toast.success(`✓ ${itemName} agregada!`);
+    setPromo3DialogOpen(false);
+
+    setTimeout(() => {
+      setAddedPromos(prev => {
+        const newSet = new Set(prev);
+        newSet.delete('promo-3');
         return newSet;
       });
     }, 2000);
   };
 
   return (
-    <section id="promotions" className="py-24 bg-gradient-to-br from-orange-50 to-yellow-50">
-      <div className="container mx-auto px-4">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Gift className="text-orange-500" size={32} />
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground">Promociones Semanales</h2>
-            <Flame className="text-red-500" size={32} />
+    <>
+      <section id="promotions" className="py-24 bg-gradient-to-br from-orange-50 to-yellow-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Gift className="text-orange-500" size={32} />
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground">Promociones Semanales</h2>
+              <Flame className="text-red-500" size={32} />
+            </div>
+            <p className="text-muted-foreground text-lg">
+              Ofertas especiales que no puedes perder. ¡Aprovecha esta semana!
+            </p>
           </div>
-          <p className="text-muted-foreground text-lg">
-            Ofertas especiales que no puedes perder. ¡Aprovecha esta semana!
-          </p>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {promotions.map((promo, index) => (
-            <motion.div
-              key={promo.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <Card
-                className={`overflow-hidden border-2 transition-all duration-300 h-full flex flex-col ${
-                  promo.highlight
-                    ? 'border-orange-400 shadow-xl hover:shadow-2xl bg-white'
-                    : 'border-gray-200 hover:border-orange-300 hover:shadow-lg'
-                }`}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {promotions.map((promo, index) => (
+              <motion.div
+                key={promo.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                {promo.highlight && (
-                  <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 px-4">
-                    <p className="text-sm font-bold text-center flex items-center justify-center gap-1">
-                      <Star size={14} />
-                      {promo.badge}
-                      <Star size={14} />
-                    </p>
-                  </div>
-                )}
-
-                <CardHeader className={promo.highlight ? 'pt-4 pb-2' : ''}>
-                  {!promo.highlight && (
-                    <Badge className="w-fit mb-2 bg-blue-500 hover:bg-blue-600">
-                      {promo.badge}
-                    </Badge>
-                  )}
-                  <CardTitle className="text-2xl">{promo.title}</CardTitle>
-                  <p className="text-sm text-muted-foreground mt-2">{promo.description}</p>
-                </CardHeader>
-
-                <CardContent className="flex-1">
-                  {promo.originalPrice && (
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-bold text-primary">{formatPrice(promo.promoPrice)}</span>
-                        <span className="text-xl line-through text-gray-400">{formatPrice(promo.originalPrice)}</span>
-                      </div>
-                      <div className="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-bold">
-                        Ahorra {formatPrice(promo.originalPrice - promo.promoPrice)}
-                      </div>
+                <Card
+                  className={`overflow-hidden border-2 transition-all duration-300 h-full flex flex-col ${
+                    promo.highlight
+                      ? 'border-orange-400 shadow-xl hover:shadow-2xl bg-white'
+                      : 'border-gray-200 hover:border-orange-300 hover:shadow-lg'
+                  }`}
+                >
+                  {promo.highlight && (
+                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 px-4">
+                      <p className="text-sm font-bold text-center flex items-center justify-center gap-1">
+                        <Star size={14} />
+                        {promo.badge}
+                        <Star size={14} />
+                      </p>
                     </div>
                   )}
-                  {!promo.originalPrice && (
-                    <div className="bg-blue-50 border-l-4 border-blue-500 p-3 rounded mb-4">
-                      <p className="text-lg font-bold text-blue-700">{promo.discount}</p>
-                      <p className="text-sm text-blue-600 mt-1">{formatPrice(promo.promoPrice)}</p>
-                    </div>
-                  )}
-                  <p className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
-                    <strong>Detalles:</strong> {promo.details}
-                  </p>
-                </CardContent>
 
-                <CardFooter>
-                  <Button
-                    onClick={() => handlePromoClick(promo)}
-                    className={`w-full rounded-full font-semibold py-5 ${
-                      addedPromos.has(promo.id)
-                        ? 'bg-green-600 hover:bg-green-700'
-                        : 'bg-orange-500 hover:bg-orange-600'
-                    } text-white`}
-                    data-testid={`button-promo-${promo.id}`}
-                  >
-                    {addedPromos.has(promo.id) ? (
-                      <>
-                        <Check size={18} className="mr-2" />
-                        Agregada
-                      </>
-                    ) : (
-                      'Aprovechar Oferta'
+                  <CardHeader className={promo.highlight ? 'pt-4 pb-2' : ''}>
+                    {!promo.highlight && (
+                      <Badge className="w-fit mb-2 bg-blue-500 hover:bg-blue-600">
+                        {promo.badge}
+                      </Badge>
                     )}
-                  </Button>
-                </CardFooter>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+                    <CardTitle className="text-2xl">{promo.title}</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-2">{promo.description}</p>
+                  </CardHeader>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-12 bg-white rounded-lg p-6 border-l-4 border-orange-500"
-        >
-          <p className="text-center text-muted-foreground">
-            <span className="font-semibold text-foreground">¡Válido esta semana!</span> Las promociones se agreguen directamente a tu carrito. Completa los detalles en la sección de pedido.
-          </p>
-        </motion.div>
-      </div>
-    </section>
+                  <CardContent className="flex-1">
+                    {promo.originalPrice && (
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-3xl font-bold text-primary">{formatPrice(promo.promoPrice)}</span>
+                          <span className="text-xl line-through text-gray-400">{formatPrice(promo.originalPrice)}</span>
+                        </div>
+                        <div className="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-bold">
+                          Ahorra {formatPrice(promo.originalPrice - promo.promoPrice)}
+                        </div>
+                      </div>
+                    )}
+                    {!promo.originalPrice && (
+                      <div className="bg-blue-50 border-l-4 border-blue-500 p-3 rounded mb-4">
+                        <p className="text-lg font-bold text-blue-700">{promo.discount}</p>
+                        <p className="text-sm text-blue-600 mt-1">{formatPrice(promo.promoPrice)}</p>
+                      </div>
+                    )}
+                    <p className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
+                      <strong>Detalles:</strong> {promo.details}
+                    </p>
+                  </CardContent>
+
+                  <CardFooter>
+                    <Button
+                      onClick={() => {
+                        if (promo.id === 'promo-1') handlePromo1Click();
+                        else if (promo.id === 'promo-2') handlePromo2Click();
+                        else if (promo.id === 'promo-3') handlePromo3Click();
+                      }}
+                      className={`w-full rounded-full font-semibold py-5 ${
+                        addedPromos.has(promo.id)
+                          ? 'bg-green-600 hover:bg-green-700'
+                          : 'bg-orange-500 hover:bg-orange-600'
+                      } text-white`}
+                      data-testid={`button-promo-${promo.id}`}
+                    >
+                      {addedPromos.has(promo.id) ? (
+                        <>
+                          <Check size={18} className="mr-2" />
+                          Agregada
+                        </>
+                      ) : (
+                        'Aprovechar Oferta'
+                      )}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mt-12 bg-white rounded-lg p-6 border-l-4 border-orange-500"
+          >
+            <p className="text-center text-muted-foreground">
+              <span className="font-semibold text-foreground">¡Válido esta semana!</span> Selecciona tus preferencias para cada promoción.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Promo-1: 2x1 Pizzas Personales Dialog */}
+      <Dialog open={promo1DialogOpen} onOpenChange={setPromo1DialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>2x1 en Pizzas Personales</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">Selecciona 2 pizzas clásicas tamaño personal (compra 1, lleva 2)</p>
+            
+            <div>
+              <Label className="font-semibold mb-2 block">Primera Pizza</Label>
+              <select 
+                value={promo1Pizza1?.id || ''} 
+                onChange={(e) => {
+                  const pizza = pizzasClasicas.find(p => p.id === parseInt(e.target.value));
+                  setPromo1Pizza1(pizza);
+                }}
+                className="w-full px-3 py-2 border rounded-md bg-white"
+              >
+                <option value="">Selecciona una pizza...</option>
+                {pizzasClasicas.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <Label className="font-semibold mb-2 block">Segunda Pizza</Label>
+              <select 
+                value={promo1Pizza2?.id || ''} 
+                onChange={(e) => {
+                  const pizza = pizzasClasicas.find(p => p.id === parseInt(e.target.value));
+                  setPromo1Pizza2(pizza);
+                }}
+                className="w-full px-3 py-2 border rounded-md bg-white"
+              >
+                <option value="">Selecciona una pizza...</option>
+                {pizzasClasicas.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {promo1Pizza1 && promo1Pizza2 && (
+              <div className="p-3 bg-green-50 rounded border-l-4 border-green-500">
+                <p className="text-sm font-semibold text-green-700">✓ Combo: {promo1Pizza1.name} + {promo1Pizza2.name}</p>
+                <p className="text-xs text-green-600 mt-1">Precio: {formatPrice(16000)}</p>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPromo1DialogOpen(false)}>Cancelar</Button>
+            <Button onClick={handlePromo1Confirm} className="bg-orange-500 hover:bg-orange-600">Agregar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Promo-2: Pizza Grande -50% Dialog */}
+      <Dialog open={promo2DialogOpen} onOpenChange={setPromo2DialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Pizza Grande -50%</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">Selecciona cualquier pizza en tamaño grande con 50% descuento</p>
+            
+            <div>
+              <Label className="font-semibold mb-2 block">Selecciona tu Pizza</Label>
+              <select 
+                value={promo2Pizza?.id || ''} 
+                onChange={(e) => {
+                  const pizza = allPizzas.find(p => p.id === parseInt(e.target.value));
+                  setPromo2Pizza(pizza);
+                }}
+                className="w-full px-3 py-2 border rounded-md bg-white"
+              >
+                <option value="">Selecciona una pizza...</option>
+                {allPizzas.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {promo2Pizza && (
+              <div className="p-3 bg-blue-50 rounded border-l-4 border-blue-500">
+                <p className="text-sm font-semibold text-blue-700">{promo2Pizza.name} Grande</p>
+                <p className="text-xs text-blue-600 mt-1">Precio original: {formatPrice(Math.round(promo2Pizza.price * 1.7))}</p>
+                <p className="text-xs font-bold text-blue-700 mt-1">Con descuento: {formatPrice(Math.round(promo2Pizza.price * 1.7 * 0.5))}</p>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPromo2DialogOpen(false)}>Cancelar</Button>
+            <Button onClick={handlePromo2Confirm} className="bg-orange-500 hover:bg-orange-600">Agregar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Promo-3: 3 Porciones + Bebida Dialog */}
+      <Dialog open={promo3DialogOpen} onOpenChange={setPromo3DialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>3 Porciones + Bebida Gratis</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+            <div>
+              <Label className="font-semibold mb-2 block">Selecciona 3 Porciones ({promo3Porciones.length}/3)</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {porciones.map(porcion => (
+                  <Button
+                    key={porcion.id}
+                    variant={promo3Porciones.some(p => p.id === porcion.id) ? 'default' : 'outline'}
+                    onClick={() => {
+                      if (promo3Porciones.some(p => p.id === porcion.id)) {
+                        handlePromo3RemovePorcion(promo3Porciones.findIndex(p => p.id === porcion.id));
+                      } else {
+                        handlePromo3AddPorcion(porcion);
+                      }
+                    }}
+                    className="text-left h-auto py-2 px-2 text-xs"
+                  >
+                    {porcion.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {promo3Porciones.length > 0 && (
+              <div className="p-3 bg-amber-50 rounded border-l-4 border-amber-500">
+                <p className="text-xs font-semibold text-amber-700">Porciones seleccionadas:</p>
+                {promo3Porciones.map((p, idx) => (
+                  <div key={idx} className="text-xs text-amber-600 mt-1 flex justify-between items-center">
+                    <span>{p.name}</span>
+                    <button onClick={() => handlePromo3RemovePorcion(idx)} className="text-red-500 hover:text-red-700">✕</button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div>
+              <Label className="font-semibold mb-2 block">Selecciona tu Bebida (GRATIS)</Label>
+              <select 
+                value={promo3Bebida?.id || ''} 
+                onChange={(e) => {
+                  const bebida = bebidas.find(b => b.id === parseInt(e.target.value));
+                  setPromo3Bebida(bebida);
+                }}
+                className="w-full px-3 py-2 border rounded-md bg-white"
+              >
+                <option value="">Selecciona una bebida...</option>
+                {bebidas.map(b => (
+                  <option key={b.id} value={b.id}>{b.name} (Gratis)</option>
+                ))}
+              </select>
+            </div>
+
+            {promo3Porciones.length === 3 && promo3Bebida && (
+              <div className="p-3 bg-green-50 rounded border-l-4 border-green-500">
+                <p className="text-sm font-semibold text-green-700">✓ Combo Completo</p>
+                <p className="text-xs text-green-600 mt-1">Total: {formatPrice(21000)} ({promo3Bebida.name} gratis)</p>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPromo3DialogOpen(false)}>Cancelar</Button>
+            <Button onClick={handlePromo3Confirm} className="bg-orange-500 hover:bg-orange-600">Agregar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
