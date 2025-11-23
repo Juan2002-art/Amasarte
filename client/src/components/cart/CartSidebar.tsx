@@ -22,6 +22,16 @@ export function CartSidebar() {
     setIsCheckingOut(false);
   };
 
+  const handleExploreMenu = () => {
+    setIsOpen(false);
+    setTimeout(() => {
+      const menuSection = document.getElementById('menu');
+      if (menuSection) {
+        menuSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent className="w-full sm:max-w-md flex flex-col">
@@ -54,14 +64,14 @@ export function CartSidebar() {
                 <div className="flex flex-col items-center justify-center h-[50vh] text-muted-foreground gap-4">
                   <ShoppingBag size={64} className="opacity-20" />
                   <p className="text-lg font-medium">Tu carrito está vacío</p>
-                  <Button variant="link" onClick={() => setIsOpen(false)}>
+                  <Button variant="link" onClick={handleExploreMenu} data-testid="button-explore-menu">
                     Explorar el Menú
                   </Button>
                 </div>
               ) : (
                 <div className="space-y-6">
                   {items.map((item) => (
-                    <div key={item.id} className="flex gap-4">
+                    <div key={item.id} className="flex gap-4" data-testid={`cart-item-${item.id}`}>
                       {item.image && (
                         <div className="h-20 w-20 rounded-md overflow-hidden flex-shrink-0">
                           <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
@@ -69,8 +79,8 @@ export function CartSidebar() {
                       )}
                       <div className="flex-1">
                         <div className="flex justify-between items-start mb-1">
-                          <h4 className="font-semibold line-clamp-1">{item.name}</h4>
-                          <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
+                          <h4 className="font-semibold line-clamp-1" data-testid={`text-cart-item-name-${item.id}`}>{item.name}</h4>
+                          <span className="font-medium" data-testid={`text-cart-item-price-${item.id}`}>${(item.price * item.quantity).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between items-end">
                           <div className="flex items-center gap-3 bg-muted/50 rounded-full p-1">
@@ -79,15 +89,17 @@ export function CartSidebar() {
                               size="icon"
                               className="h-6 w-6 rounded-full"
                               onClick={() => updateQuantity(item.id, -1)}
+                              data-testid={`button-decrease-quantity-${item.id}`}
                             >
                               <Minus size={12} />
                             </Button>
-                            <span className="text-sm font-medium w-4 text-center">{item.quantity}</span>
+                            <span className="text-sm font-medium w-4 text-center" data-testid={`text-quantity-${item.id}`}>{item.quantity}</span>
                             <Button
                               variant="ghost"
                               size="icon"
                               className="h-6 w-6 rounded-full"
                               onClick={() => updateQuantity(item.id, 1)}
+                              data-testid={`button-increase-quantity-${item.id}`}
                             >
                               <Plus size={12} />
                             </Button>
@@ -97,6 +109,7 @@ export function CartSidebar() {
                             size="icon"
                             className="h-8 w-8 text-muted-foreground hover:text-destructive"
                             onClick={() => removeItem(item.id)}
+                            data-testid={`button-remove-item-${item.id}`}
                           >
                             <Trash2 size={16} />
                           </Button>
@@ -112,11 +125,12 @@ export function CartSidebar() {
               <div className="border-t pt-6 mt-4 space-y-4">
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span data-testid="text-cart-total">${total.toFixed(2)}</span>
                 </div>
                 <Button 
-                  className="w-full text-lg py-6 rounded-full shadow-lg shadow-primary/20" 
+                  className="w-full text-lg py-6 rounded-full shadow-lg shadow-primary/20"
                   onClick={() => setIsCheckingOut(true)}
+                  data-testid="button-checkout"
                 >
                   Proceder al Pago
                 </Button>
