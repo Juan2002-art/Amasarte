@@ -49,3 +49,8 @@ waitForPort = 5000
 
 [agent]
 mockupState = "FULLSTACK"
+
+[userenv]
+
+[userenv.shared]
+GOOGLE_SHEETS_ID = "1VJ6WUfh32goYUvlRAKvTHcHinAvNqqG2Xn4hbtXRSv8"
