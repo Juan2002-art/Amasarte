@@ -440,7 +440,7 @@ export function Promotions() {
             <p className="text-sm" style={{ color: '#F5E8D0' }}>Selecciona 2 pizzas clásicas tamaño personal (compra 1, lleva 2)</p>
             
             <div>
-              <Label className="font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Primera Pizza</Label>
+              <Label className="font-semibold mb-2 block" style={{ color: '#FFFF00' }}>Primera Pizza</Label>
               <select 
                 value={promo1Pizza1?.id || ''} 
                 onChange={(e) => {
@@ -448,6 +448,7 @@ export function Promotions() {
                   setPromo1Pizza1(pizza);
                 }}
                 className="w-full px-3 py-2 border rounded-md bg-white"
+                style={{ color: '#FF8533', fontWeight: 'bold' }}
               >
                 <option value="">Selecciona una pizza...</option>
                 {pizzasClasicas.map(p => (
@@ -457,7 +458,7 @@ export function Promotions() {
             </div>
 
             <div>
-              <Label className="font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Segunda Pizza</Label>
+              <Label className="font-semibold mb-2 block" style={{ color: '#FFFF00' }}>Segunda Pizza</Label>
               <select 
                 value={promo1Pizza2?.id || ''} 
                 onChange={(e) => {
@@ -465,6 +466,7 @@ export function Promotions() {
                   setPromo1Pizza2(pizza);
                 }}
                 className="w-full px-3 py-2 border rounded-md bg-white"
+                style={{ color: '#FF8533', fontWeight: 'bold' }}
               >
                 <option value="">Selecciona una pizza...</option>
                 {pizzasClasicas.map(p => (
@@ -481,7 +483,7 @@ export function Promotions() {
             )}
 
             <div>
-              <Label className="font-semibold mb-3 block" style={{ color: '#F5E8D0' }}>Tipo de Base</Label>
+              <Label className="font-semibold mb-3 block" style={{ color: '#FFFF00' }}>Tipo de Base</Label>
               <RadioGroup value={promo1Base} onValueChange={setPromo1Base}>
                 {baseOptions.map(option => (
                   <div key={option.value} className="flex items-center space-x-2 mb-2">
@@ -605,7 +607,7 @@ export function Promotions() {
             )}
 
             <div>
-              <Label className="font-semibold mb-3 block" style={{ color: '#F5E8D0' }}>Tipo de Base</Label>
+              <Label className="font-semibold mb-3 block" style={{ color: '#FFFF00' }}>Tipo de Base</Label>
               <RadioGroup value={promo2Base} onValueChange={setPromo2Base}>
                 {baseOptions.map(option => (
                   <div key={option.value} className="flex items-center space-x-2 mb-2">
@@ -631,7 +633,7 @@ export function Promotions() {
           </DialogHeader>
           <div className="space-y-4 max-h-[60vh] overflow-y-auto">
             <div>
-              <Label className="font-semibold mb-2 block">Selecciona 3 Porciones ({promo3Porciones.length}/3)</Label>
+              <Label className="font-semibold mb-2 block" style={{ color: '#FFFF00' }}>Selecciona 3 Porciones ({promo3Porciones.length}/3)</Label>
               <div className="grid grid-cols-2 gap-2">
                 {porciones.map(porcion => (
                   <Button
@@ -665,7 +667,7 @@ export function Promotions() {
             )}
 
             <div>
-              <Label className="font-semibold mb-2 block">Selecciona tu Bebida (GRATIS)</Label>
+              <Label className="font-semibold mb-2 block" style={{ color: '#FFFF00' }}>Selecciona tu Bebida (GRATIS)</Label>
               <select 
                 value={promo3Bebida?.id || ''} 
                 onChange={(e) => {
@@ -673,6 +675,7 @@ export function Promotions() {
                   setPromo3Bebida(bebida);
                 }}
                 className="w-full px-3 py-2 border rounded-md bg-white"
+                style={{ color: '#FF8533', fontWeight: 'bold' }}
               >
                 <option value="">Selecciona una bebida...</option>
                 {bebidas.map(b => (
