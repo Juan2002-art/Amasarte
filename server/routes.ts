@@ -123,6 +123,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.items,
         validatedData.detallesAdicionales || "",
         validatedData.total,
+        "Pendiente",
       ];
 
       // Get the next available row after the headers (check column A)
@@ -137,7 +138,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Insert data starting from row 2 (skipping header row), column A
       await sheetsClient.spreadsheets.values.update({
         spreadsheetId,
-        range: `A${nextRow}:K${nextRow}`,
+        range: `A${nextRow}:L${nextRow}`,
         valueInputOption: "USER_ENTERED",
         requestBody: {
           values: [rowData],
