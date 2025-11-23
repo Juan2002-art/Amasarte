@@ -1,7 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { google } from "googleapis";
 import { z } from "zod";
 
 const OrderSchema = z.object({
@@ -15,48 +14,12 @@ const OrderSchema = z.object({
   total: z.string(),
 });
 
-type Order = z.infer<typeof OrderSchema>;
+type OrderInput = z.infer<typeof OrderSchema>;
 
 function generateOrderId(): string {
   const timestamp = Date.now().toString(36).toUpperCase();
   const random = Math.random().toString(36).substring(2, 6).toUpperCase();
   return `PED-${timestamp}-${random}`;
-}
-
-async function getGoogleSheetsClient() {
-  const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
-  const xReplitToken = process.env.REPL_IDENTITY
-    ? "repl " + process.env.REPL_IDENTITY
-    : process.env.WEB_REPL_RENEWAL
-      ? "depl " + process.env.WEB_REPL_RENEWAL
-      : null;
-
-  if (!xReplitToken) {
-    throw new Error("X_REPLIT_TOKEN not found for repl/depl");
-  }
-
-  const connectionSettings = await fetch(
-    "https://" + hostname + "/api/v2/connection?include_secrets=true&connector_names=google-sheet",
-    {
-      headers: {
-        Accept: "application/json",
-        X_REPLIT_TOKEN: xReplitToken,
-      },
-    }
-  ).then((res) => res.json()).then((data) => data.items?.[0]);
-
-  const accessToken = connectionSettings?.settings?.access_token || connectionSettings.settings?.oauth?.credentials?.access_token;
-
-  if (!connectionSettings || !accessToken) {
-    throw new Error("Google Sheet not connected");
-  }
-
-  const oauth2Client = new google.auth.OAuth2();
-  oauth2Client.setCredentials({
-    access_token: accessToken,
-  });
-
-  return google.sheets({ version: "v4", auth: oauth2Client });
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -65,42 +28,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = OrderSchema.parse(req.body);
       
-      // Get the spreadsheet ID from environment variable
-      const spreadsheetId = process.env.GOOGLE_SHEETS_ID;
-      if (!spreadsheetId) {
-        return res.status(500).json({ error: "Google Sheets ID not configured" });
-      }
-
-      const sheetsClient = await getGoogleSheetsClient();
-      
       const orderId = generateOrderId();
-      const now = new Date();
-      const fecha = now.toLocaleDateString("es-MX");
-      const hora = now.toLocaleTimeString("es-MX");
       
-      // Append the data to the Google Sheet using '1930017163' (gid from your URL)
-      await sheetsClient.spreadsheets.values.append({
-        spreadsheetId,
-        range: "'1930017163'!A:K",
-        valueInputOption: "USER_ENTERED",
-        requestBody: {
-          values: [
-            [
-              orderId,
-              fecha,
-              hora,
-              validatedData.nombre,
-              validatedData.telefono,
-              validatedData.direccion,
-              validatedData.tipoEntrega,
-              validatedData.formaPago,
-              validatedData.items,
-              validatedData.detallesAdicionales || "",
-              validatedData.total,
-            ],
-          ],
-        },
+      // Save order to storage
+      const order = await storage.createOrder({
+        id: orderId,
+        nombre: validatedData.nombre,
+        telefono: validatedData.telefono,
+        direccion: validatedData.direccion,
+        tipoEntrega: validatedData.tipoEntrega,
+        formaPago: validatedData.formaPago,
+        items: validatedData.items,
+        detallesAdicionales: validatedData.detallesAdicionales || null,
+        total: validatedData.total,
       });
+      
+      console.log("Order saved successfully with ID:", orderId);
 
       res.json({ success: true, orderId, message: "Pedido creado exitosamente" });
     } catch (error: any) {
