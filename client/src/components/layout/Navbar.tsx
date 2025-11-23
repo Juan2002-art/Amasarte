@@ -4,12 +4,10 @@ import { Menu, X, ShoppingBag, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCart } from '@/context/CartContext';
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { setIsOpen } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,8 +41,10 @@ export function Navbar() {
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <Link href="/" className="font-display font-bold text-2xl md:text-3xl tracking-tighter text-primary cursor-pointer flex items-center gap-2">
-          AMASARTE
+        <Link href="/">
+          <a className="font-display font-bold text-2xl md:text-3xl tracking-tighter text-primary cursor-pointer flex items-center gap-2">
+            AMASARTE
+          </a>
         </Link>
 
         {/* Desktop Nav */}
@@ -64,7 +64,6 @@ export function Navbar() {
           <Button 
             variant={isScrolled ? "default" : "secondary"}
             className="rounded-full font-semibold"
-            onClick={() => setIsOpen(true)}
           >
             Hacer Pedido
           </Button>
@@ -97,10 +96,7 @@ export function Navbar() {
                 {link.name}
               </button>
             ))}
-            <Button className="w-full rounded-full mt-2" size="lg" onClick={() => {
-              setIsOpen(true);
-              setIsMobileMenuOpen(false);
-            }}>
+            <Button className="w-full rounded-full mt-2" size="lg">
               Hacer Pedido Online
             </Button>
           </motion.div>

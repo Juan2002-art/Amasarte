@@ -14,57 +14,21 @@ const images = [
   { id: 5, src: pizzaHero, alt: 'Detalle', span: 'md:col-span-1 md:row-span-1' },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  },
-};
-
 export function Gallery() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   return (
-    <section id="gallery" className="py-24 bg-muted/30 overflow-hidden">
+    <section id="gallery" className="py-24 bg-muted/30">
       <div className="container mx-auto px-4">
-        <motion.div 
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
+        <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">Galería</h2>
           <p className="text-muted-foreground">Un vistazo a nuestra cocina y pasión.</p>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[250px]"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[250px]">
           {images.map((image, index) => (
             <motion.div
               key={image.id}
-              variants={itemVariants}
               className={`relative rounded-2xl overflow-hidden cursor-pointer group ${image.span}`}
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
@@ -76,46 +40,28 @@ export function Gallery() {
                 alt={image.alt}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              <motion.div 
-                className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
-                initial={{ opacity: 0 }}
-                whileHover={{ opacity: 1 }}
-              >
-                <motion.p 
-                  className="text-white font-bold text-lg translate-y-4 group-hover:translate-y-0 transition-transform duration-300"
-                  initial={{ y: 10 }}
-                  whileHover={{ y: 0 }}
-                >
+              <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <p className="text-white font-bold text-lg translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                   {image.alt}
-                </motion.p>
-              </motion.div>
+                </p>
+              </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
-        <AnimatePresence>
-          {selectedId !== null && (
-            <Dialog open={selectedId !== null} onOpenChange={() => setSelectedId(null)}>
-              <DialogContent className="max-w-5xl p-0 bg-transparent border-none shadow-none overflow-hidden">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3 }}
-                  className="relative"
-                >
-                  {selectedId && (
-                    <img
-                      src={images.find(i => i.id === selectedId)?.src}
-                      alt="Selected"
-                      className="w-full h-auto rounded-lg max-h-[85vh] object-contain"
-                    />
-                  )}
-                </motion.div>
-              </DialogContent>
-            </Dialog>
-          )}
-        </AnimatePresence>
+        <Dialog open={selectedId !== null} onOpenChange={() => setSelectedId(null)}>
+          <DialogContent className="max-w-5xl p-0 bg-transparent border-none shadow-none overflow-hidden">
+            {selectedId && (
+              <div className="relative">
+                <img
+                  src={images.find(i => i.id === selectedId)?.src}
+                  alt="Selected"
+                  className="w-full h-auto rounded-lg max-h-[85vh] object-contain"
+                />
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   );

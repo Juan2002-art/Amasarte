@@ -2,11 +2,8 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import heroImage from '@assets/generated_images/artisanal_pizza_hero_image.png';
-import { useCart } from '@/context/CartContext';
 
 export function Hero() {
-  const { setIsOpen } = useCart();
-
   return (
     <section id="hero" className="relative h-screen w-full overflow-hidden flex items-center justify-center">
       {/* Background Image */}
@@ -47,11 +44,7 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <Button 
-            size="lg" 
-            className="rounded-full text-lg px-8 py-6 h-auto w-full sm:w-auto shadow-[0_0_20px_rgba(46,204,113,0.4)]"
-            onClick={() => setIsOpen(true)}
-          >
+          <Button size="lg" className="rounded-full text-lg px-8 py-6 h-auto w-full sm:w-auto shadow-[0_0_20px_rgba(46,204,113,0.4)]">
             Hacer Pedido Online
           </Button>
           <Button
