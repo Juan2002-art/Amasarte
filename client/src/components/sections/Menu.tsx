@@ -184,23 +184,24 @@ export function Menu() {
   };
 
   return (
-    <section id="menu" className="py-24 bg-white">
+    <section id="menu" className="py-24" style={{ backgroundColor: '#1A3A3B' }}>
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Nuestro Menú</h2>
-          <p className="text-muted-foreground text-lg">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#F5E8D0' }}>Nuestro Menú</h2>
+          <p className="text-lg" style={{ color: '#F5E8D0' }}>
             Sabores auténticos creados con ingredientes frescos y mucho amor.
           </p>
         </div>
 
         <Tabs defaultValue="clasicas" className="w-full" onValueChange={setActiveTab}>
           <div className="flex justify-center mb-12 overflow-x-auto pb-2">
-            <TabsList className="bg-muted/50 p-1 h-auto rounded-full">
+            <TabsList className="p-1 h-auto rounded-full" style={{ backgroundColor: '#2A5A5B' }}>
               {categories.map((cat) => (
                 <TabsTrigger
                   key={cat.id}
                   value={cat.id}
-                  className="rounded-full px-8 py-3 text-base data-[state=active]:bg-primary data-[state=active]:text-white transition-all duration-300"
+                  className="rounded-full px-8 py-3 text-base transition-all duration-300 data-[state=active]:bg-orange-500 data-[state=active]:text-white"
+                  style={{ color: '#F5E8D0' }}
                 >
                   {cat.label}
                 </TabsTrigger>
@@ -218,7 +219,7 @@ export function Menu() {
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
                 {menuItems[cat.id as keyof typeof menuItems].map((item) => (
-                  <Card key={item.id} className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 bg-white h-full flex flex-col">
+                  <Card key={item.id} className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col" style={{ backgroundColor: '#1A3A3B' }}>
                     {item.image && (
                       <div className="relative h-56 overflow-hidden">
                         <img
@@ -241,15 +242,15 @@ export function Menu() {
                     )}
                     <CardHeader className={item.image ? 'pt-6' : ''}>
                       <div className="flex justify-between items-start mb-2">
-                        <CardTitle className="text-xl font-bold">{item.name}</CardTitle>
-                        <span className="text-lg font-bold text-primary">{formatPrice(item.price)}</span>
+                        <CardTitle className="text-xl font-bold" style={{ color: '#F5E8D0' }}>{item.name}</CardTitle>
+                        <span className="text-lg font-bold text-orange-400">{formatPrice(item.price)}</span>
                       </div>
-                      <CardDescription className="text-base line-clamp-2">{item.desc}</CardDescription>
+                      <CardDescription className="text-base line-clamp-2" style={{ color: '#F5E8D0' }}>{item.desc}</CardDescription>
                     </CardHeader>
                     <CardFooter className="mt-auto pt-4">
                       <Button 
                         onClick={() => handleItemClick(item)}
-                        className={`w-full rounded-full transition-colors ${addedItems.has(item.id) ? 'bg-primary text-white' : 'group-hover:bg-primary group-hover:text-white'}`}
+                        className={`w-full rounded-full transition-colors ${addedItems.has(item.id) ? 'bg-green-600 hover:bg-green-700' : 'bg-orange-500 hover:bg-orange-600'} text-white`}
                         data-testid={`button-add-${item.id}`}
                       >
                         {addedItems.has(item.id) ? <Check size={18} className="mr-2" /> : <Plus size={18} className="mr-2" />}

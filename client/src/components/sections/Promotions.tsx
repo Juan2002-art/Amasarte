@@ -370,10 +370,11 @@ export function Promotions() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-12 bg-white rounded-lg p-6 border-l-4 border-orange-500"
+            className="mt-12 rounded-lg p-6 border-l-4 border-orange-500"
+            style={{ backgroundColor: '#1A3A3B' }}
           >
-            <p className="text-center text-muted-foreground">
-              <span className="font-semibold text-foreground">¡Válido esta semana!</span> Selecciona tus preferencias para cada promoción.
+            <p className="text-center" style={{ color: '#F5E8D0' }}>
+              <span className="font-semibold" style={{ color: '#F5E8D0' }}>¡Válido esta semana!</span> Selecciona tus preferencias para cada promoción.
             </p>
           </motion.div>
         </div>
