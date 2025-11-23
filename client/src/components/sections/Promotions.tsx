@@ -115,7 +115,10 @@ export function Promotions() {
 
   // Promo-2 state
   const [promo2DialogOpen, setPromo2DialogOpen] = useState(false);
+  const [promo2Type, setPromo2Type] = useState<'completa' | 'mitadCadaPizza'>('completa');
   const [promo2Pizza, setPromo2Pizza] = useState<any>(null);
+  const [promo2MitadPizza1, setPromo2MitadPizza1] = useState<any>(null);
+  const [promo2MitadPizza2, setPromo2MitadPizza2] = useState<any>(null);
   const [promo2Base, setPromo2Base] = useState('tomate');
 
   // Promo-3 state
@@ -167,21 +170,41 @@ export function Promotions() {
 
   // Handlers for Promo-2
   const handlePromo2Click = () => {
+    setPromo2Type('completa');
     setPromo2Pizza(null);
+    setPromo2MitadPizza1(null);
+    setPromo2MitadPizza2(null);
     setPromo2Base('tomate');
     setPromo2DialogOpen(true);
   };
 
   const handlePromo2Confirm = () => {
-    if (!promo2Pizza) {
+    if (promo2Type === 'completa' && !promo2Pizza) {
       toast.error('Por favor selecciona una pizza');
       return;
     }
 
+    if (promo2Type === 'mitadCadaPizza' && (!promo2MitadPizza1 || !promo2MitadPizza2)) {
+      toast.error('Por favor selecciona 2 pizzas para la mitad de cada una');
+      return;
+    }
+
     const baseLabelMap: any = { tomate: 'Tomate', blanca: 'Blanca', barbeque: 'BBQ' };
-    const grandePrice = Math.round(promo2Pizza.price * 1.7);
-    const promoPrice = Math.round(grandePrice * 0.5);
-    const itemName = `${promo2Pizza.name} Grande -50% (Base ${baseLabelMap[promo2Base]})`;
+    let itemName = '';
+    let priceBeforeDiscount = 0;
+
+    if (promo2Type === 'completa') {
+      const grandePrice = Math.round(promo2Pizza.price * 1.7);
+      priceBeforeDiscount = grandePrice;
+      itemName = `${promo2Pizza.name} Grande -50% (Base ${baseLabelMap[promo2Base]})`;
+    } else {
+      const halfPrice1 = Math.round((promo2MitadPizza1.price * 1.7) / 2);
+      const halfPrice2 = Math.round((promo2MitadPizza2.price * 1.7) / 2);
+      priceBeforeDiscount = halfPrice1 + halfPrice2;
+      itemName = `Mitad ${promo2MitadPizza1.name} + Mitad ${promo2MitadPizza2.name} Grande -50% (Base ${baseLabelMap[promo2Base]})`;
+    }
+
+    const promoPrice = Math.round(priceBeforeDiscount * 0.5);
 
     addItem(
       {
@@ -194,6 +217,11 @@ export function Promotions() {
         porcentajeDescuento: 50,
         tamaño: 'grande',
         tipoBase: promo2Base,
+        tipoPizza: promo2Type,
+        ...(promo2Type === 'mitadCadaPizza' && {
+          mitadPizza1: promo2MitadPizza1 ? { id: promo2MitadPizza1.id, name: promo2MitadPizza1.name } : undefined,
+          mitadPizza2: promo2MitadPizza2 ? { id: promo2MitadPizza2.id, name: promo2MitadPizza2.name } : undefined,
+        }),
       }
     );
 
@@ -481,28 +509,96 @@ export function Promotions() {
             <p className="text-sm text-muted-foreground">Selecciona cualquier pizza en tamaño grande con 50% descuento</p>
             
             <div>
-              <Label className="font-semibold mb-2 block">Selecciona tu Pizza</Label>
-              <select 
-                value={promo2Pizza?.id || ''} 
-                onChange={(e) => {
-                  const pizza = allPizzas.find(p => p.id === parseInt(e.target.value));
-                  setPromo2Pizza(pizza);
-                }}
-                className="w-full px-3 py-2 border rounded-md bg-white"
-              >
-                <option value="">Selecciona una pizza...</option>
-                {allPizzas.map(p => (
-                  <option key={p.id} value={p.id}>{p.name}</option>
-                ))}
-              </select>
+              <Label className="font-semibold mb-2 block">Tipo de Pizza</Label>
+              <RadioGroup value={promo2Type} onValueChange={(v: any) => setPromo2Type(v)}>
+                <div className="flex items-center space-x-2 mb-2">
+                  <RadioGroupItem value="completa" id="promo2-completa" />
+                  <Label htmlFor="promo2-completa" className="text-sm cursor-pointer">Pizza Completa</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="mitadCadaPizza" id="promo2-mitad-cada-pizza" />
+                  <Label htmlFor="promo2-mitad-cada-pizza" className="text-sm cursor-pointer">Mitad de Cada Pizza</Label>
+                </div>
+              </RadioGroup>
             </div>
 
-            {promo2Pizza && (
-              <div className="p-3 bg-blue-50 rounded border-l-4 border-blue-500">
-                <p className="text-sm font-semibold text-blue-700">{promo2Pizza.name} Grande</p>
-                <p className="text-xs text-blue-600 mt-1">Precio original: {formatPrice(Math.round(promo2Pizza.price * 1.7))}</p>
-                <p className="text-xs font-bold text-blue-700 mt-1">Con descuento: {formatPrice(Math.round(promo2Pizza.price * 1.7 * 0.5))}</p>
-              </div>
+            {promo2Type === 'completa' && (
+              <>
+                <div>
+                  <Label className="font-semibold mb-2 block">Selecciona tu Pizza</Label>
+                  <select 
+                    value={promo2Pizza?.id || ''} 
+                    onChange={(e) => {
+                      const pizza = allPizzas.find(p => p.id === parseInt(e.target.value));
+                      setPromo2Pizza(pizza);
+                    }}
+                    className="w-full px-3 py-2 border rounded-md bg-white"
+                  >
+                    <option value="">Selecciona una pizza...</option>
+                    {allPizzas.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {promo2Pizza && (
+                  <div className="p-3 bg-blue-50 rounded border-l-4 border-blue-500">
+                    <p className="text-sm font-semibold text-blue-700">{promo2Pizza.name} Grande</p>
+                    <p className="text-xs text-blue-600 mt-1">Precio original: {formatPrice(Math.round(promo2Pizza.price * 1.7))}</p>
+                    <p className="text-xs font-bold text-blue-700 mt-1">Con descuento: {formatPrice(Math.round(promo2Pizza.price * 1.7 * 0.5))}</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {promo2Type === 'mitadCadaPizza' && (
+              <>
+                <div>
+                  <Label className="font-semibold mb-2 block">Primera Pizza (Mitad)</Label>
+                  <select 
+                    value={promo2MitadPizza1?.id || ''} 
+                    onChange={(e) => {
+                      const pizza = allPizzas.find(p => p.id === parseInt(e.target.value));
+                      setPromo2MitadPizza1(pizza);
+                    }}
+                    className="w-full px-3 py-2 border rounded-md bg-white"
+                  >
+                    <option value="">Selecciona una pizza...</option>
+                    {allPizzas.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <Label className="font-semibold mb-2 block">Segunda Pizza (Mitad)</Label>
+                  <select 
+                    value={promo2MitadPizza2?.id || ''} 
+                    onChange={(e) => {
+                      const pizza = allPizzas.find(p => p.id === parseInt(e.target.value));
+                      setPromo2MitadPizza2(pizza);
+                    }}
+                    className="w-full px-3 py-2 border rounded-md bg-white"
+                  >
+                    <option value="">Selecciona una pizza...</option>
+                    {allPizzas.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {promo2MitadPizza1 && promo2MitadPizza2 && (
+                  <div className="p-3 bg-purple-50 rounded border-l-4 border-purple-500">
+                    <p className="text-sm font-semibold text-purple-700">✓ Mitad {promo2MitadPizza1.name} + Mitad {promo2MitadPizza2.name} Grande</p>
+                    <div className="text-xs text-purple-600 mt-2 space-y-1">
+                      <div>Mitad {promo2MitadPizza1.name}: {formatPrice(Math.round((promo2MitadPizza1.price * 1.7) / 2))}</div>
+                      <div>Mitad {promo2MitadPizza2.name}: {formatPrice(Math.round((promo2MitadPizza2.price * 1.7) / 2))}</div>
+                      <div className="font-bold">Original: {formatPrice(Math.round((promo2MitadPizza1.price * 1.7) / 2) + Math.round((promo2MitadPizza2.price * 1.7) / 2))}</div>
+                      <div className="text-green-600 font-bold">Con 50% descuento: {formatPrice(Math.round((Math.round((promo2MitadPizza1.price * 1.7) / 2) + Math.round((promo2MitadPizza2.price * 1.7) / 2)) * 0.5))}</div>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
 
             <div>

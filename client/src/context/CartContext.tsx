@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 
 export interface PizzaOptions {
-  tipoPizza?: 'completa' | 'mitad';
+  tipoPizza?: 'completa' | 'mitad' | 'mitadCadaPizza';
   mitadPizza1?: { id: number; name: string };
   mitadPizza2?: { id: number; name: string };
   tipoBase?: string;

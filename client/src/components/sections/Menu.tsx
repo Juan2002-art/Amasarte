@@ -116,9 +116,11 @@ export function Menu() {
   const [addedItems, setAddedItems] = useState<Set<number>>(new Set());
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [pizzaType, setPizzaType] = useState<'completa' | 'mitad'>('completa');
+  const [pizzaType, setPizzaType] = useState<'completa' | 'mitad' | 'mitadCadaPizza'>('completa');
   const [mitadPizza1, setMitadPizza1] = useState<any>(null);
   const [mitadPizza2, setMitadPizza2] = useState<any>(null);
+  const [mitadCadaPizza1, setMitadCadaPizza1] = useState<any>(null);
+  const [mitadCadaPizza2, setMitadCadaPizza2] = useState<any>(null);
   const [baseType, setBaseType] = useState('tomate');
   const [selectedSize, setSelectedSize] = useState<'personal' | 'mediana' | 'grande'>('mediana');
 
@@ -140,6 +142,8 @@ export function Menu() {
       setPizzaType('completa');
       setMitadPizza1(null);
       setMitadPizza2(null);
+      setMitadCadaPizza1(null);
+      setMitadCadaPizza2(null);
       setBaseType('tomate');
       setSelectedSize('mediana');
       setDialogOpen(true);
@@ -165,7 +169,20 @@ export function Menu() {
       return;
     }
 
-    const priceWithSize = Math.round(selectedItem.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]);
+    if (pizzaType === 'mitadCadaPizza' && (!mitadCadaPizza1 || !mitadCadaPizza2)) {
+      toast.error('Por favor selecciona 2 pizzas para la mitad de cada una');
+      return;
+    }
+
+    let priceWithSize = Math.round(selectedItem.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]);
+    
+    if (pizzaType === 'mitadCadaPizza' && mitadCadaPizza1 && mitadCadaPizza2) {
+      const size = sizeMultipliers[selectedSize as keyof typeof sizeMultipliers];
+      const halfPrice1 = Math.round((mitadCadaPizza1.price * size) / 2);
+      const halfPrice2 = Math.round((mitadCadaPizza2.price * size) / 2);
+      priceWithSize = halfPrice1 + halfPrice2;
+    }
+
     const itemWithPrice = { ...selectedItem, price: priceWithSize };
 
     const options: PizzaOptions = {
@@ -175,6 +192,10 @@ export function Menu() {
       ...(pizzaType === 'mitad' && {
         mitadPizza1: mitadPizza1 ? { id: mitadPizza1.id, name: mitadPizza1.name } : undefined,
         mitadPizza2: mitadPizza2 ? { id: mitadPizza2.id, name: mitadPizza2.name } : undefined,
+      }),
+      ...(pizzaType === 'mitadCadaPizza' && {
+        mitadPizza1: mitadCadaPizza1 ? { id: mitadCadaPizza1.id, name: mitadCadaPizza1.name } : undefined,
+        mitadPizza2: mitadCadaPizza2 ? { id: mitadCadaPizza2.id, name: mitadCadaPizza2.name } : undefined,
       }),
     };
 
@@ -281,9 +302,13 @@ export function Menu() {
                   <RadioGroupItem value="completa" id="completa" />
                   <Label htmlFor="completa" className="text-base cursor-pointer">Pizza Completa</Label>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 mb-3">
                   <RadioGroupItem value="mitad" id="mitad" />
                   <Label htmlFor="mitad" className="text-base cursor-pointer">Mitad de 2 Pizzas Diferentes</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="mitadCadaPizza" id="mitadCadaPizza" />
+                  <Label htmlFor="mitadCadaPizza" className="text-base cursor-pointer">Mitad de Cada Pizza</Label>
                 </div>
               </RadioGroup>
             </div>
@@ -332,6 +357,60 @@ export function Menu() {
                 {mitadPizza1 && mitadPizza2 && (
                   <div className="mt-3 p-3 bg-white rounded border-l-4 border-green-500">
                     <p className="text-sm font-semibold text-green-700">✓ Combinación válida: {mitadPizza1.name} + {mitadPizza2.name}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Mitad de Cada Pizza Selection */}
+            {pizzaType === 'mitadCadaPizza' && (
+              <div className="bg-purple-50 p-4 rounded-lg space-y-4">
+                <p className="text-sm font-medium text-purple-900">Selecciona mitad de 2 pizzas diferentes:</p>
+                
+                <div>
+                  <Label className="text-base font-semibold mb-2 block">Primera Pizza (Mitad)</Label>
+                  <select 
+                    value={mitadCadaPizza1?.id || ''} 
+                    onChange={(e) => {
+                      const pizza = allPizzas.find(p => p.id === parseInt(e.target.value));
+                      setMitadCadaPizza1(pizza);
+                    }}
+                    className="w-full px-3 py-2 border rounded-md bg-white"
+                    data-testid="select-mitad-cada-pizza-1"
+                  >
+                    <option value="">Selecciona una pizza...</option>
+                    {allPizzas.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <Label className="text-base font-semibold mb-2 block">Segunda Pizza (Mitad)</Label>
+                  <select 
+                    value={mitadCadaPizza2?.id || ''} 
+                    onChange={(e) => {
+                      const pizza = allPizzas.find(p => p.id === parseInt(e.target.value));
+                      setMitadCadaPizza2(pizza);
+                    }}
+                    className="w-full px-3 py-2 border rounded-md bg-white"
+                    data-testid="select-mitad-cada-pizza-2"
+                  >
+                    <option value="">Selecciona una pizza...</option>
+                    {allPizzas.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {mitadCadaPizza1 && mitadCadaPizza2 && (
+                  <div className="mt-3 p-3 bg-white rounded border-l-4 border-purple-500">
+                    <p className="text-sm font-semibold text-purple-700">✓ Combinación: Mitad {mitadCadaPizza1.name} + Mitad {mitadCadaPizza2.name}</p>
+                    <div className="text-xs text-purple-600 mt-2 space-y-1">
+                      <div>Mitad {mitadCadaPizza1.name}: {formatPrice(Math.round((mitadCadaPizza1.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]) / 2))}</div>
+                      <div>Mitad {mitadCadaPizza2.name}: {formatPrice(Math.round((mitadCadaPizza2.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]) / 2))}</div>
+                      <div className="font-bold">Total: {formatPrice(Math.round((mitadCadaPizza1.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]) / 2) + Math.round((mitadCadaPizza2.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]) / 2))}</div>
+                    </div>
                   </div>
                 )}
               </div>
