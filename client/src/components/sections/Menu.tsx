@@ -71,6 +71,7 @@ const menuItems = {
     { id: 13, name: 'Rúcula y Parmesano', desc: 'Base blanca, rúcula fresca, virutas de parmesano, tomates asados, piñones.', price: 41000, tags: ['veg', 'gourmet'], image: ruguelaImage },
     { id: 14, name: 'BBQ Ahumada', desc: 'Carne ahumada, cebolla roja, cilantro, salsa BBQ artesanal.', price: 43000, tags: ['popular'], image: bbqImage },
     { id: 15, name: 'Camarones al Ajillo', desc: 'Base blanca, camarones al ajillo, limón, ajo tostado, perejil.', price: 45000, tags: ['chef-choice'], image: camaronesImage },
+    { id: 50, name: 'Mitad de Cada', desc: 'Escoge 2 pizzas diferentes y lleva mitad de cada una. Elige el tamaño que prefieras.', price: 0, tags: ['popular'], image: null },
   ],
   porciones: [
     { id: 101, name: 'Porción Margherita', desc: '1 Porción de Margherita crujiente.', price: 8000, tags: ['veg'], image: margheritaImage },
@@ -116,13 +117,12 @@ export function Menu() {
   const [addedItems, setAddedItems] = useState<Set<number>>(new Set());
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [pizzaType, setPizzaType] = useState<'completa' | 'mitad' | 'mitadCadaPizza'>('completa');
-  const [mitadPizza1, setMitadPizza1] = useState<any>(null);
-  const [mitadPizza2, setMitadPizza2] = useState<any>(null);
   const [mitadCadaPizza1, setMitadCadaPizza1] = useState<any>(null);
   const [mitadCadaPizza2, setMitadCadaPizza2] = useState<any>(null);
   const [baseType, setBaseType] = useState('tomate');
   const [selectedSize, setSelectedSize] = useState<'personal' | 'mediana' | 'grande'>('mediana');
+
+  const isMitadDeCadaPizza = selectedItem?.id === 50;
 
   const isPizza = (item: any) => {
     return activeTab === 'clasicas' || activeTab === 'especiales' || menuItems.especiales.find(p => p.id === item.id) || menuItems.clasicas.find(p => p.id === item.id);
@@ -139,9 +139,6 @@ export function Menu() {
       handleAddToCart(item);
     } else if (isPizza(item)) {
       setSelectedItem(item);
-      setPizzaType('completa');
-      setMitadPizza1(null);
-      setMitadPizza2(null);
       setMitadCadaPizza1(null);
       setMitadCadaPizza2(null);
       setBaseType('tomate');
@@ -164,36 +161,31 @@ export function Menu() {
   };
 
   const handleConfirmPizza = () => {
-    if (pizzaType === 'mitad' && (!mitadPizza1 || !mitadPizza2)) {
-      toast.error('Por favor selecciona 2 pizzas para la mitad');
-      return;
-    }
-
-    if (pizzaType === 'mitadCadaPizza' && (!mitadCadaPizza1 || !mitadCadaPizza2)) {
+    if (isMitadDeCadaPizza && (!mitadCadaPizza1 || !mitadCadaPizza2)) {
       toast.error('Por favor selecciona 2 pizzas para la mitad de cada una');
       return;
     }
 
-    let priceWithSize = Math.round(selectedItem.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]);
+    let priceWithSize = 0;
+    let displayName = selectedItem.name;
     
-    if (pizzaType === 'mitadCadaPizza' && mitadCadaPizza1 && mitadCadaPizza2) {
+    if (isMitadDeCadaPizza && mitadCadaPizza1 && mitadCadaPizza2) {
       const size = sizeMultipliers[selectedSize as keyof typeof sizeMultipliers];
       const halfPrice1 = Math.round((mitadCadaPizza1.price * size) / 2);
       const halfPrice2 = Math.round((mitadCadaPizza2.price * size) / 2);
       priceWithSize = halfPrice1 + halfPrice2;
+      displayName = `Mitad ${mitadCadaPizza1.name} + Mitad ${mitadCadaPizza2.name}`;
+    } else {
+      priceWithSize = Math.round(selectedItem.price * sizeMultipliers[selectedSize as keyof typeof sizeMultipliers]);
     }
 
-    const itemWithPrice = { ...selectedItem, price: priceWithSize };
+    const itemWithPrice = { ...selectedItem, name: displayName, price: priceWithSize };
 
     const options: PizzaOptions = {
-      tipoPizza: pizzaType,
       tipoBase: baseType,
       tamaño: selectedSize,
-      ...(pizzaType === 'mitad' && {
-        mitadPizza1: mitadPizza1 ? { id: mitadPizza1.id, name: mitadPizza1.name } : undefined,
-        mitadPizza2: mitadPizza2 ? { id: mitadPizza2.id, name: mitadPizza2.name } : undefined,
-      }),
-      ...(pizzaType === 'mitadCadaPizza' && {
+      ...(isMitadDeCadaPizza && {
+        tipoPizza: 'mitadCadaPizza',
         mitadPizza1: mitadCadaPizza1 ? { id: mitadCadaPizza1.id, name: mitadCadaPizza1.name } : undefined,
         mitadPizza2: mitadCadaPizza2 ? { id: mitadCadaPizza2.id, name: mitadCadaPizza2.name } : undefined,
       }),
@@ -294,76 +286,8 @@ export function Menu() {
           </DialogHeader>
 
           <div className="space-y-6">
-            {/* Pizza Type Selection */}
-            <div>
-              <Label className="text-base font-semibold mb-3 block">Tipo de Pizza</Label>
-              <RadioGroup value={pizzaType} onValueChange={(v: any) => setPizzaType(v)}>
-                <div className="flex items-center space-x-2 mb-3">
-                  <RadioGroupItem value="completa" id="completa" />
-                  <Label htmlFor="completa" className="text-base cursor-pointer">Pizza Completa</Label>
-                </div>
-                <div className="flex items-center space-x-2 mb-3">
-                  <RadioGroupItem value="mitad" id="mitad" />
-                  <Label htmlFor="mitad" className="text-base cursor-pointer">Mitad de 2 Pizzas Diferentes</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="mitadCadaPizza" id="mitadCadaPizza" />
-                  <Label htmlFor="mitadCadaPizza" className="text-base cursor-pointer">Mitad de Cada Pizza</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            {/* Half Pizza Selection */}
-            {pizzaType === 'mitad' && (
-              <div className="bg-blue-50 p-4 rounded-lg space-y-4">
-                <p className="text-sm font-medium text-blue-900">Selecciona 2 pizzas diferentes:</p>
-                
-                <div>
-                  <Label className="text-base font-semibold mb-2 block">Primera Mitad</Label>
-                  <select 
-                    value={mitadPizza1?.id || ''} 
-                    onChange={(e) => {
-                      const pizza = allPizzas.find(p => p.id === parseInt(e.target.value));
-                      setMitadPizza1(pizza);
-                    }}
-                    className="w-full px-3 py-2 border rounded-md bg-white"
-                    data-testid="select-mitad-pizza-1"
-                  >
-                    <option value="">Selecciona una pizza...</option>
-                    {allPizzas.map(p => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <Label className="text-base font-semibold mb-2 block">Segunda Mitad</Label>
-                  <select 
-                    value={mitadPizza2?.id || ''} 
-                    onChange={(e) => {
-                      const pizza = allPizzas.find(p => p.id === parseInt(e.target.value));
-                      setMitadPizza2(pizza);
-                    }}
-                    className="w-full px-3 py-2 border rounded-md bg-white"
-                    data-testid="select-mitad-pizza-2"
-                  >
-                    <option value="">Selecciona una pizza...</option>
-                    {allPizzas.map(p => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {mitadPizza1 && mitadPizza2 && (
-                  <div className="mt-3 p-3 bg-white rounded border-l-4 border-green-500">
-                    <p className="text-sm font-semibold text-green-700">✓ Combinación válida: {mitadPizza1.name} + {mitadPizza2.name}</p>
-                  </div>
-                )}
-              </div>
-            )}
-
             {/* Mitad de Cada Pizza Selection */}
-            {pizzaType === 'mitadCadaPizza' && (
+            {isMitadDeCadaPizza && (
               <div className="bg-purple-50 p-4 rounded-lg space-y-4">
                 <p className="text-sm font-medium text-purple-900">Selecciona mitad de 2 pizzas diferentes:</p>
                 
@@ -372,14 +296,14 @@ export function Menu() {
                   <select 
                     value={mitadCadaPizza1?.id || ''} 
                     onChange={(e) => {
-                      const pizza = allPizzas.find(p => p.id === parseInt(e.target.value));
+                      const pizza = allPizzas.find(p => p.id === parseInt(e.target.value) && p.id !== 50);
                       setMitadCadaPizza1(pizza);
                     }}
                     className="w-full px-3 py-2 border rounded-md bg-white"
                     data-testid="select-mitad-cada-pizza-1"
                   >
                     <option value="">Selecciona una pizza...</option>
-                    {allPizzas.map(p => (
+                    {allPizzas.filter(p => p.id !== 50).map(p => (
                       <option key={p.id} value={p.id}>{p.name}</option>
                     ))}
                   </select>
@@ -390,14 +314,14 @@ export function Menu() {
                   <select 
                     value={mitadCadaPizza2?.id || ''} 
                     onChange={(e) => {
-                      const pizza = allPizzas.find(p => p.id === parseInt(e.target.value));
+                      const pizza = allPizzas.find(p => p.id === parseInt(e.target.value) && p.id !== 50);
                       setMitadCadaPizza2(pizza);
                     }}
                     className="w-full px-3 py-2 border rounded-md bg-white"
                     data-testid="select-mitad-cada-pizza-2"
                   >
                     <option value="">Selecciona una pizza...</option>
-                    {allPizzas.map(p => (
+                    {allPizzas.filter(p => p.id !== 50).map(p => (
                       <option key={p.id} value={p.id}>{p.name}</option>
                     ))}
                   </select>
