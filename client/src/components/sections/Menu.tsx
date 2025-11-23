@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Plus, Leaf, Flame, Star, Check } from 'lucide-react';
+import { Plus, Leaf, Flame, Star, Check, X } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -281,8 +281,16 @@ export function Menu() {
       {/* Pizza Customization Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl">
-          <DialogHeader>
+          <DialogHeader className="flex flex-row items-center justify-between">
             <DialogTitle>Personalizar {selectedItem?.name}</DialogTitle>
+            <button
+              onClick={() => setDialogOpen(false)}
+              className="md:hidden p-1 hover:bg-gray-200 rounded-full transition-colors"
+              aria-label="Cerrar"
+              data-testid="button-close-pizza-dialog"
+            >
+              <X size={24} />
+            </button>
           </DialogHeader>
 
           <div className="space-y-6">
