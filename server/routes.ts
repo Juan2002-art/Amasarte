@@ -92,19 +92,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.total,
       ];
 
-      // Get the next available row after the headers
+      // Get the next available row after the headers (check column A)
       const sheetResp = await sheetsClient.spreadsheets.values.get({
         spreadsheetId,
-        range: "B:B",
+        range: "A:A",
       });
       
       const existingRows = sheetResp.data.values?.length || 1;
       const nextRow = Math.max(existingRows + 1, 2); // At least row 2
 
-      // Insert data starting from row 2 (skipping header row), column B
+      // Insert data starting from row 2 (skipping header row), column A
       await sheetsClient.spreadsheets.values.update({
         spreadsheetId,
-        range: `B${nextRow}:L${nextRow}`,
+        range: `A${nextRow}:K${nextRow}`,
         valueInputOption: "USER_ENTERED",
         requestBody: {
           values: [rowData],
