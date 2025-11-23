@@ -292,7 +292,7 @@ export function Menu() {
                 <p className="text-sm font-medium" style={{ color: '#F5E8D0' }}>Selecciona mitad de 2 pizzas diferentes:</p>
                 
                 <div>
-                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Primera Pizza (Mitad)</Label>
+                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#1A3A3B' }}>Primera Pizza (Mitad)</Label>
                   <select 
                     value={mitadCadaPizza1?.id || ''} 
                     onChange={(e) => {
@@ -310,7 +310,7 @@ export function Menu() {
                 </div>
 
                 <div>
-                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#F5E8D0' }}>Segunda Pizza (Mitad)</Label>
+                  <Label className="text-base font-semibold mb-2 block" style={{ color: '#1A3A3B' }}>Segunda Pizza (Mitad)</Label>
                   <select 
                     value={mitadCadaPizza2?.id || ''} 
                     onChange={(e) => {
