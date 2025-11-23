@@ -22,7 +22,6 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { Trash2, Send, X, CheckCircle2, ShoppingCart } from 'lucide-react';
-import { useLocation } from 'wouter';
 
 // Format price in Colombian pesos
 const formatPrice = (price: number): string => {
@@ -36,7 +35,6 @@ const formatPrice = (price: number): string => {
 
 export function Checkout() {
   const { items, total, clearCart, removeItem, updateQuantity } = useCart();
-  const [, navigate] = useLocation();
   const [loading, setLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState<{orderId: string; timestamp: string} | null>(null);
   const [formData, setFormData] = useState({
@@ -47,6 +45,13 @@ export function Checkout() {
     formaPago: 'efectivo',
     detallesAdicionales: '',
   });
+
+  const scrollToMenu = () => {
+    const menuElement = document.getElementById('menu');
+    if (menuElement) {
+      menuElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -247,7 +252,7 @@ export function Checkout() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => navigate('/#menu')}
+                    onClick={scrollToMenu}
                     className="w-full rounded-full"
                     data-testid="button-go-to-menu"
                   >
