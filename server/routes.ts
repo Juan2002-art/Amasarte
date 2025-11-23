@@ -92,27 +92,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.total,
       ];
 
-      // Use batchUpdate to append cells to avoid range parsing issues
-      await sheetsClient.spreadsheets.batchUpdate({
+      // Append data starting from column B (second column)
+      await sheetsClient.spreadsheets.values.append({
         spreadsheetId,
+        range: "B:L", // Starting from column B to L (11 columns for all data)
+        valueInputOption: "USER_ENTERED",
         requestBody: {
-          requests: [
-            {
-              appendCells: {
-                sheetId: 1930017163, // Using the correct sheet ID from your Google Sheets URL
-                rows: [
-                  {
-                    values: rowData.map((value) => ({
-                      userEnteredValue: {
-                        stringValue: String(value),
-                      },
-                    })),
-                  },
-                ],
-                fields: "userEnteredValue",
-              },
-            },
-          ],
+          values: [rowData],
         },
       });
 
