@@ -30,8 +30,6 @@ export function Navbar() {
 
   const navLinks = [
     { name: 'Inicio', href: '#hero' },
-    { name: 'Sobre Nosotros', href: '#about' },
-    { name: 'Menú', href: '#menu' },
     { name: 'Galería', href: '#gallery' },
     { name: 'Contacto', href: '#contact' },
   ];

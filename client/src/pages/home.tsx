@@ -1,6 +1,5 @@
 import { Navbar } from '@/components/layout/Navbar';
 import { Hero } from '@/components/sections/Hero';
-import { About } from '@/components/sections/About';
 import { Promotions } from '@/components/sections/Promotions';
 import { Menu } from '@/components/sections/Menu';
 import { Gallery } from '@/components/sections/Gallery';
@@ -22,7 +21,6 @@ function HomeContent() {
       
       <main>
         <Hero />
-        <About />
         <Promotions />
         <Menu />
         <Gallery />
