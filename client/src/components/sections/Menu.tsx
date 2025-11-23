@@ -63,7 +63,7 @@ const menuItems = {
     { id: 4, name: 'Hawaiana Artesanal', desc: 'Piña asada, jamón serrano, mozzarella, salsa de tomate.', price: 35000, tags: [], image: hawaianaImage },
     { id: 11, name: 'Carbonara', desc: 'Base blanca, panceta, queso pecorino, yema de huevo, pimienta negra.', price: 36000, tags: [], image: carboneraImage },
     { id: 12, name: 'Caprese', desc: 'Tomates frescos, mozzarella de búfala, albahaca, aceite de oliva, balsámico.', price: 34000, tags: ['veg'], image: capreseImage },
-    { id: 50, name: 'Mitad de Cada Uno', desc: 'Escoge 2 pizzas diferentes y lleva mitad de cada una. El precio es la suma del 50% de cada pizza según el tamaño.', price: 0, tags: ['popular'], image: null },
+    { id: 50, name: 'Mitad de Cada Una', desc: 'Escoge 2 pizzas diferentes y lleva mitad de cada una. El precio es la suma del 50% de cada pizza según el tamaño.', price: 35000, tags: ['popular'], image: null },
   ],
   especiales: [
     { id: 5, name: 'Trufa y Hongos', desc: 'Crema de trufa, mix de hongos silvestres, mozzarella, aceite de trufa blanca.', price: 42000, tags: ['gourmet', 'veg'], image: trufaImage },
