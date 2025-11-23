@@ -35,18 +35,22 @@ export function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
     const deliveryFee = formData.type === 'delivery' ? 3 : 0;
     const finalTotal = total + deliveryFee;
 
-    const orderData = {
+    const orderData: any = {
       customerName: formData.name,
       phone: formData.phone,
       orderType: formData.type,
-      address: formData.type === 'delivery' ? formData.address : null,
       paymentMethod: formData.paymentMethod,
       orderDetails: getOrderDetailsText(),
       items: JSON.stringify(items),
       total: finalTotal.toFixed(2),
       status: 'pendiente',
-      orderTime: formData.orderTime || null,
+      orderTime: formData.orderTime,
     };
+
+    // Solo agregar dirección si es delivery
+    if (formData.type === 'delivery') {
+      orderData.address = formData.address;
+    }
 
     try {
       const response = await fetch('/api/orders', {
