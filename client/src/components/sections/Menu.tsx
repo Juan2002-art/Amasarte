@@ -5,20 +5,26 @@ import { Button } from '@/components/ui/button';
 import { Plus, Leaf, Flame, Star, Info } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import pizzaImage from '@assets/generated_images/margherita_pizza_menu_item.png';
+import margheritaImage from '@assets/generated_images/fresh_margherita_pizza_with_basil.png';
+import pepperoniImage from '@assets/generated_images/crispy_pepperoni_pizza_with_cheese.png';
+import quatroQuesosImage from '@assets/generated_images/gourmet_four_cheese_pizza.png';
+import hawaianaImage from '@assets/generated_images/hawaiian_pizza_with_pineapple_ham.png';
+import trufaImage from '@assets/generated_images/truffle_mushroom_gourmet_pizza.png';
+import burratImage from '@assets/generated_images/burrata_prosciutto_artisanal_pizza.png';
+import diabolaImage from '@assets/generated_images/spicy_diavola_hot_pizza.png';
 
 // Mock Data
 const menuItems = {
   clasicas: [
-    { id: 1, name: 'Margherita', desc: 'Salsa de tomate San Marzano, mozzarella fior di latte, albahaca fresca, aceite de oliva virgen extra.', price: 12.99, tags: ['veg'], image: pizzaImage },
-    { id: 2, name: 'Pepperoni', desc: 'Salsa de tomate, mozzarella, doble porción de pepperoni crujiente.', price: 14.50, tags: ['popular'], image: pizzaImage },
-    { id: 3, name: 'Cuatro Quesos', desc: 'Mozzarella, gorgonzola, parmesano reggiano, provolone, miel picante.', price: 15.50, tags: ['veg'], image: pizzaImage },
-    { id: 4, name: 'Hawaiana Artesanal', desc: 'Piña asada, jamón serrano, mozzarella, salsa de tomate.', price: 14.99, tags: [], image: pizzaImage },
+    { id: 1, name: 'Margherita', desc: 'Salsa de tomate San Marzano, mozzarella fior di latte, albahaca fresca, aceite de oliva virgen extra.', price: 12.99, tags: ['veg'], image: margheritaImage },
+    { id: 2, name: 'Pepperoni', desc: 'Salsa de tomate, mozzarella, doble porción de pepperoni crujiente.', price: 14.50, tags: ['popular'], image: pepperoniImage },
+    { id: 3, name: 'Cuatro Quesos', desc: 'Mozzarella, gorgonzola, parmesano reggiano, provolone, miel picante.', price: 15.50, tags: ['veg'], image: quatroQuesosImage },
+    { id: 4, name: 'Hawaiana Artesanal', desc: 'Piña asada, jamón serrano, mozzarella, salsa de tomate.', price: 14.99, tags: [], image: hawaianaImage },
   ],
   especiales: [
-    { id: 5, name: 'Trufa y Hongos', desc: 'Crema de trufa, mix de hongos silvestres, mozzarella, aceite de trufa blanca.', price: 18.99, tags: ['gourmet', 'veg'], image: pizzaImage },
-    { id: 6, name: 'Burrata y Prosciutto', desc: 'Base blanca, prosciutto di Parma, burrata fresca entera, rúcula, tomates cherry.', price: 19.50, tags: ['chef-choice'], image: pizzaImage },
-    { id: 7, name: 'Diavola Picante', desc: "Salami picante, 'nduja calabresa, chiles frescos, miel.", price: 16.50, tags: ['spicy'], image: pizzaImage },
+    { id: 5, name: 'Trufa y Hongos', desc: 'Crema de trufa, mix de hongos silvestres, mozzarella, aceite de trufa blanca.', price: 18.99, tags: ['gourmet', 'veg'], image: trufaImage },
+    { id: 6, name: 'Burrata y Prosciutto', desc: 'Base blanca, prosciutto di Parma, burrata fresca entera, rúcula, tomates cherry.', price: 19.50, tags: ['chef-choice'], image: burratImage },
+    { id: 7, name: 'Diavola Picante', desc: "Salami picante, 'nduja calabresa, chiles frescos, miel.", price: 16.50, tags: ['spicy'], image: diabolaImage },
   ],
   bebidas: [
     { id: 8, name: 'Limonada Casera', desc: 'Limones frescos, menta y un toque de jengibre.', price: 4.50, tags: [], image: null },
