@@ -35,7 +35,7 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="font-sans text-lg md:text-2xl font-light text-gray-200 mb-10 max-w-2xl mx-auto"
         >
-          Sabor, arte y pasión en cada porción. Ingredientes frescos y masa madre fermentada 48 horas.
+          La mejor pizza artesanal de Cartagena. Hecha con amor, masticada con placer.
         </motion.p>
 
         <motion.div
