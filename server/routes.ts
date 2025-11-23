@@ -23,6 +23,24 @@ function generateOrderId(): string {
   return `PED-${timestamp}-${random}`;
 }
 
+function mapTipoEntrega(value: string): string {
+  const tipoEntregaMap: Record<string, string> = {
+    'domicilio': 'Envío a Domicilio',
+    'recoger': 'Recoger en Tienda',
+    'comeraqui': 'Comer Aquí',
+  };
+  return tipoEntregaMap[value] || value;
+}
+
+function mapFormaPago(value: string): string {
+  const formaPagoMap: Record<string, string> = {
+    'efectivo': 'Efectivo',
+    'tarjeta': 'Tarjeta',
+    'transferencia': 'Transferencia',
+  };
+  return formaPagoMap[value] || value;
+}
+
 async function getGoogleSheetsClient() {
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
   const xReplitToken = process.env.REPL_IDENTITY
@@ -85,8 +103,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.nombre,
         validatedData.telefono,
         validatedData.direccion,
-        validatedData.tipoEntrega,
-        validatedData.formaPago,
+        mapTipoEntrega(validatedData.tipoEntrega),
+        mapFormaPago(validatedData.formaPago),
         validatedData.items,
         validatedData.detallesAdicionales || "",
         validatedData.total,
