@@ -41,10 +41,8 @@ export function Navbar() {
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <Link href="/">
-          <a className="font-display font-bold text-2xl md:text-3xl tracking-tighter text-primary cursor-pointer flex items-center gap-2">
-            AMASARTE
-          </a>
+        <Link href="/" className="font-display font-bold text-2xl md:text-3xl tracking-tighter text-primary cursor-pointer flex items-center gap-2">
+          AMASARTE
         </Link>
 
         {/* Desktop Nav */}
