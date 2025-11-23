@@ -42,6 +42,24 @@ function mapFormaPago(value: string): string {
 }
 
 async function getGoogleSheetsClient() {
+  // Try to use Service Account credentials first (for Railway/production)
+  if (process.env.GOOGLE_CREDENTIALS) {
+    try {
+      const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+      const auth = new google.auth.GoogleAuth({
+        credentials,
+        scopes: [
+          "https://www.googleapis.com/auth/spreadsheets",
+          "https://www.googleapis.com/auth/drive.file",
+        ],
+      });
+      return google.sheets({ version: "v4", auth });
+    } catch (error) {
+      console.error("Failed to use Service Account credentials:", error);
+    }
+  }
+
+  // Fall back to Replit integration (for development)
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
   const xReplitToken = process.env.REPL_IDENTITY
     ? "repl " + process.env.REPL_IDENTITY
@@ -50,7 +68,7 @@ async function getGoogleSheetsClient() {
       : null;
 
   if (!xReplitToken) {
-    throw new Error("X_REPLIT_TOKEN not found for repl/depl");
+    throw new Error("No Google Sheets credentials found. Set GOOGLE_CREDENTIALS or use Replit integration.");
   }
 
   const connectionSettings = await fetch(
