@@ -44,7 +44,8 @@
   --color-chart-5: hsl(var(--chart-5));
 
   --font-sans: 'Inter', sans-serif;
-  --font-display: 'Poppins', sans-serif;
+  --font-display: 'Playfair Display', serif;
+  --font-subtitle: 'Montserrat', sans-serif;
   
   --radius: 0.5rem;
 }
@@ -52,79 +53,79 @@
 /* LIGHT MODE */
 :root {
   /* Base Colors */
-  --background: 0 0% 100%; /* White */
-  --foreground: 145 63% 15%; /* Dark Green/Blackish */
+  --background: 164 27% 23%; /* #1A3A3B */
+  --foreground: 44 100% 97%; /* #F5F5DC */
 
   /* Card */
-  --card: 0 0% 100%;
-  --card-foreground: 145 63% 15%;
+  --card: 164 27% 28%;
+  --card-foreground: 44 100% 97%;
 
   /* Popover */
-  --popover: 0 0% 100%;
-  --popover-foreground: 145 63% 15%;
+  --popover: 164 27% 28%;
+  --popover-foreground: 44 100% 97%;
 
-  /* Primary - Green #2ECC71 */
-  --primary: 145 63% 49%;
-  --primary-foreground: 0 0% 100%;
+  /* Primary - Orange */
+  --primary: 25 95% 53%;
+  --primary-foreground: 164 27% 23%;
 
-  /* Secondary - Dark Green #1E8449 */
-  --secondary: 145 63% 32%;
-  --secondary-foreground: 0 0% 98%;
+  /* Secondary - Light beige */
+  --secondary: 44 100% 97%;
+  --secondary-foreground: 164 27% 23%;
 
-  /* Muted - Soft Gray #F2F2F2 */
-  --muted: 0 0% 95%;
-  --muted-foreground: 145 10% 40%;
+  /* Muted - Darker teal */
+  --muted: 164 27% 35%;
+  --muted-foreground: 44 100% 90%;
 
-  /* Accent - Light Greenish for hovers */
-  --accent: 145 63% 95%;
-  --accent-foreground: 145 63% 32%;
+  /* Accent - Orange for hovers */
+  --accent: 25 95% 53%;
+  --accent-foreground: 164 27% 23%;
 
   /* Destructive */
   --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 98%;
+  --destructive-foreground: 44 100% 97%;
 
   /* Borders */
-  --border: 145 20% 90%;
-  --input: 145 20% 90%;
-  --ring: 145 63% 49%;
+  --border: 164 27% 35%;
+  --input: 164 27% 35%;
+  --ring: 25 95% 53%;
 
   /* Charts */
-  --chart-1: 145 63% 49%;
-  --chart-2: 145 63% 32%;
-  --chart-3: 45 90% 50%; /* Yellow/Gold for stars */
+  --chart-1: 25 95% 53%;
+  --chart-2: 44 100% 97%;
+  --chart-3: 45 90% 50%;
   --chart-4: 12 76% 61%;
-  --chart-5: 173 58% 39%;
+  --chart-5: 164 27% 28%;
 }
 
 .dark {
-  /* Dark mode not explicitly requested but good to have fallbacks */
-  --background: 145 63% 5%;
-  --foreground: 0 0% 98%;
+  /* Dark mode - same as light mode for consistency */
+  --background: 164 27% 23%;
+  --foreground: 44 100% 97%;
 
-  --card: 145 63% 8%;
-  --card-foreground: 0 0% 98%;
+  --card: 164 27% 28%;
+  --card-foreground: 44 100% 97%;
 
-  --popover: 145 63% 8%;
-  --popover-foreground: 0 0% 98%;
+  --popover: 164 27% 28%;
+  --popover-foreground: 44 100% 97%;
 
-  --primary: 145 63% 49%;
-  --primary-foreground: 0 0% 100%;
+  --primary: 25 95% 53%;
+  --primary-foreground: 164 27% 23%;
 
-  --secondary: 145 63% 32%;
-  --secondary-foreground: 0 0% 98%;
+  --secondary: 44 100% 97%;
+  --secondary-foreground: 164 27% 23%;
 
-  --muted: 145 30% 15%;
-  --muted-foreground: 145 10% 65%;
+  --muted: 164 27% 35%;
+  --muted-foreground: 44 100% 90%;
 
-  --accent: 145 30% 15%;
-  --accent-foreground: 0 0% 98%;
+  --accent: 25 95% 53%;
+  --accent-foreground: 164 27% 23%;
 
-  --destructive: 0 62% 30%;
-  --destructive-foreground: 0 0% 98%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 44 100% 97%;
 
-  --border: 145 30% 15%;
-  --input: 145 30% 15%;
-  --ring: 145 63% 49%;
+  --border: 164 27% 35%;
+  --input: 164 27% 35%;
+  --ring: 25 95% 53%;
 }
 
 @layer base {
