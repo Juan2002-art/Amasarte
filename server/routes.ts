@@ -99,7 +99,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           requests: [
             {
               appendCells: {
-                sheetId: 0,
+                sheetId: 1930017163, // Using the correct sheet ID from your Google Sheets URL
                 rows: [
                   {
                     values: rowData.map((value) => ({
