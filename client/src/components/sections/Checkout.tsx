@@ -353,7 +353,6 @@ export function Checkout() {
                   <SelectContent>
                     <SelectItem value="domicilio">Envío a Domicilio</SelectItem>
                     <SelectItem value="recoger">Recoger en Tienda</SelectItem>
-                    <SelectItem value="comeraqui">Comer Aquí</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -387,7 +386,6 @@ export function Checkout() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="efectivo">Efectivo</SelectItem>
-                    <SelectItem value="tarjeta">Tarjeta</SelectItem>
                     <SelectItem value="transferencia">Transferencia</SelectItem>
                   </SelectContent>
                 </Select>
