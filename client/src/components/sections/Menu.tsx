@@ -73,14 +73,6 @@ const menuItems = {
     { id: 14, name: 'BBQ Ahumada', desc: 'Carne ahumada, cebolla roja, cilantro, salsa BBQ artesanal.', price: 43000, tags: ['popular'], image: bbqImage },
     { id: 15, name: 'Camarones al Ajillo', desc: 'Base blanca, camarones al ajillo, limón, ajo tostado, perejil.', price: 45000, tags: ['chef-choice'], image: camaronesImage },
   ],
-  porciones: [
-    { id: 101, name: 'Porción Margherita', desc: '1 Porción de Margherita crujiente.', price: 8000, tags: ['veg'], image: margheritaImage },
-    { id: 102, name: 'Porción Pepperoni', desc: '1 Porción de Pepperoni con doble queso.', price: 9000, tags: ['popular'], image: pepperoniImage },
-    { id: 103, name: 'Porción Cuatro Quesos', desc: '1 Porción gourmet de 4 quesos.', price: 10000, tags: ['veg'], image: quatroQuesosImage },
-    { id: 104, name: 'Porción Hawaiana', desc: '1 Porción de Hawaiana Artesanal.', price: 9000, tags: [], image: hawaianaImage },
-    { id: 105, name: 'Porción BBQ', desc: '1 Porción de BBQ Ahumada.', price: 11000, tags: [], image: bbqImage },
-    { id: 106, name: 'Porción Diavola', desc: '1 Porción picante Diavola.', price: 10500, tags: ['spicy'], image: diabolaImage },
-  ],
   bebidas: [
     { id: 8, name: 'Limonada Casera', desc: 'Limones frescos, menta y un toque de jengibre.', price: 13000, tags: [], image: limonadaImage },
     { id: 9, name: 'Cerveza Artesanal IPA', desc: 'Cervecería local, notas cítricas.', price: 14000, tags: [], image: cervezaIPAImage },
@@ -101,7 +93,6 @@ const allPizzas = [
 const categories = [
   { id: 'clasicas', label: 'Clásicas' },
   { id: 'especiales', label: 'Especiales' },
-  { id: 'porciones', label: 'Porciones' },
   { id: 'bebidas', label: 'Bebidas' },
 ];
 
@@ -130,12 +121,8 @@ export function Menu() {
 
   const isBeverage = (item: any) => activeTab === 'bebidas' || menuItems.bebidas.find(b => b.id === item.id);
 
-  const isPortion = (item: any) => activeTab === 'porciones' || menuItems.porciones.find(p => p.id === item.id);
-
   const handleItemClick = (item: any) => {
     if (isBeverage(item)) {
-      handleAddToCart(item);
-    } else if (isPortion(item)) {
       handleAddToCart(item);
     } else if (isPizza(item)) {
       setSelectedItem(item);
