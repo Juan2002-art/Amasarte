@@ -16,7 +16,7 @@ export function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
     name: '',
     phone: '',
     address: '',
-    type: 'delivery', // delivery | pickup | dine-in
+    type: 'delivery',
     notes: ''
   });
 
@@ -24,29 +24,53 @@ export function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate API call to Google Sheets
-    // In a real app, this would be a backend endpoint that uses the Google Sheets API
+    const deliveryFee = formData.type === 'delivery' ? 3 : 0;
+    const finalTotal = total + deliveryFee;
+
     const orderData = {
-      ...formData,
-      items: items.map(i => `${i.quantity}x ${i.name}`).join(', '),
-      total: total.toFixed(2),
-      date: new Date().toISOString()
+      customerName: formData.name,
+      phone: formData.phone,
+      orderType: formData.type,
+      address: formData.type === 'delivery' ? formData.address : null,
+      notes: formData.notes || null,
+      items: JSON.stringify(items),
+      total: finalTotal.toFixed(2)
     };
 
-    console.log("Submitting order to Google Sheets (Mock):", orderData);
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
 
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+      const result = await response.json();
 
-    setLoading(false);
-    toast({
-      title: "¡Pedido Recibido!",
-      description: "Tu orden ha sido enviada a la cocina. Te contactaremos pronto.",
-      duration: 5000,
-    });
-    
-    clearCart();
-    onSuccess();
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Error al enviar el pedido');
+      }
+
+      toast({
+        title: "¡Pedido Recibido!",
+        description: `Tu orden #${result.order.id} ha sido registrada. Te contactaremos pronto al ${formData.phone}.`,
+        duration: 7000,
+      });
+
+      clearCart();
+      onSuccess();
+    } catch (error: any) {
+      console.error('Error submitting order:', error);
+      toast({
+        title: "Error al Procesar el Pedido",
+        description: error.message || "Hubo un problema. Por favor intenta de nuevo.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (items.length === 0) {
@@ -69,6 +93,7 @@ export function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
             placeholder="Juan Pérez"
             value={formData.name}
             onChange={e => setFormData({...formData, name: e.target.value})}
+            data-testid="input-customer-name"
           />
         </div>
         
@@ -81,6 +106,7 @@ export function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
             placeholder="55 1234 5678"
             value={formData.phone}
             onChange={e => setFormData({...formData, phone: e.target.value})}
+            data-testid="input-phone"
           />
         </div>
 
@@ -93,15 +119,15 @@ export function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
             className="flex gap-4"
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="delivery" id="r1" />
+              <RadioGroupItem value="delivery" id="r1" data-testid="radio-delivery" />
               <Label htmlFor="r1">Domicilio</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="pickup" id="r2" />
+              <RadioGroupItem value="pickup" id="r2" data-testid="radio-pickup" />
               <Label htmlFor="r2">Recoger</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="dine-in" id="r3" />
+              <RadioGroupItem value="dine-in" id="r3" data-testid="radio-dinein" />
               <Label htmlFor="r3">Comer Aquí</Label>
             </div>
           </RadioGroup>
@@ -116,6 +142,7 @@ export function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
               placeholder="Calle, Número, Colonia, Referencias"
               value={formData.address}
               onChange={e => setFormData({...formData, address: e.target.value})}
+              data-testid="input-address"
             />
           </div>
         )}
@@ -127,6 +154,7 @@ export function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
             placeholder="Sin cebolla, salsa extra, etc."
             value={formData.notes}
             onChange={e => setFormData({...formData, notes: e.target.value})}
+            data-testid="input-notes"
           />
         </div>
       </div>
@@ -134,19 +162,24 @@ export function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
       <div className="bg-muted p-4 rounded-lg space-y-2">
         <div className="flex justify-between text-sm">
           <span>Subtotal</span>
-          <span>${total.toFixed(2)}</span>
+          <span data-testid="text-subtotal">${total.toFixed(2)}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span>Envío</span>
-          <span>{formData.type === 'delivery' ? '$3.00' : '$0.00'}</span>
+          <span data-testid="text-delivery-fee">{formData.type === 'delivery' ? '$3.00' : '$0.00'}</span>
         </div>
         <div className="flex justify-between font-bold text-lg pt-2 border-t">
           <span>Total</span>
-          <span>${(total + (formData.type === 'delivery' ? 3 : 0)).toFixed(2)}</span>
+          <span data-testid="text-total">${(total + (formData.type === 'delivery' ? 3 : 0)).toFixed(2)}</span>
         </div>
       </div>
 
-      <Button type="submit" className="w-full font-bold text-lg h-12" disabled={loading}>
+      <Button 
+        type="submit" 
+        className="w-full font-bold text-lg h-12" 
+        disabled={loading}
+        data-testid="button-submit-order"
+      >
         {loading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
