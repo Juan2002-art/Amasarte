@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertOrderSchema } from "@shared/schema";
 import { fromError } from "zod-validation-error";
-import { appendOrderToSheet } from "./googleSheets";
+import { appendOrderToSheet, initializeSheetHeaders } from "./googleSheets";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/orders", async (req, res) => {
@@ -87,6 +87,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({
         success: false,
         error: "Error al obtener el pedido"
+      });
+    }
+  });
+
+  app.post("/api/sheets/initialize", async (req, res) => {
+    try {
+      await initializeSheetHeaders();
+      res.json({ 
+        success: true, 
+        message: "Encabezados de Google Sheets configurados correctamente" 
+      });
+    } catch (error: any) {
+      console.error("Error initializing sheet headers:", error);
+      res.status(500).json({
+        success: false,
+        error: error.message || "Error al configurar Google Sheets"
       });
     }
   });

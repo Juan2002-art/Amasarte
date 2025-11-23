@@ -42,3 +42,8 @@ waitForPort = 5000
 [agent]
 mockupState = "FULLSTACK"
 integrations = ["google-sheet:1.0.0"]
+
+[userenv]
+
+[userenv.shared]
+GOOGLE_SHEETS_SPREADSHEET_ID = "1VJ6WUfh32goYUvlRAKvTHcHinAvNqqG2Xn4hbtXRSv8"

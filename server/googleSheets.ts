@@ -47,6 +47,54 @@ export async function getUncachableGoogleSheetClient() {
   return google.sheets({ version: 'v4', auth: oauth2Client });
 }
 
+export async function initializeSheetHeaders() {
+  const sheets = await getUncachableGoogleSheetClient();
+  
+  const SPREADSHEET_ID = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
+  
+  if (!SPREADSHEET_ID) {
+    throw new Error('GOOGLE_SHEETS_SPREADSHEET_ID not configured');
+  }
+
+  const headers = [[
+    'ID',
+    'Fecha',
+    'Nombre Cliente',
+    'Teléfono',
+    'Tipo de Pedido',
+    'Dirección',
+    'Items',
+    'Total',
+    'Notas'
+  ]];
+
+  try {
+    // Check if headers already exist
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: 'Pedidos!A1:I1',
+    });
+
+    if (!response.data.values || response.data.values.length === 0) {
+      // Headers don't exist, create them
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: SPREADSHEET_ID,
+        range: 'Pedidos!A1:I1',
+        valueInputOption: 'RAW',
+        requestBody: {
+          values: headers
+        }
+      });
+      console.log('Google Sheets headers initialized');
+    } else {
+      console.log('Google Sheets headers already exist');
+    }
+  } catch (error) {
+    console.error('Failed to initialize Google Sheets headers:', error);
+    throw error;
+  }
+}
+
 export async function appendOrderToSheet(orderData: {
   id: number;
   customerName: string;
